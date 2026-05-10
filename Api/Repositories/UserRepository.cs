@@ -1,11 +1,13 @@
 using Api.Contracts;
 using Api.Entities;
+using Api.Settings;
+using Microsoft.Extensions.Options;
 
 namespace Api.Repositories;
 
 public class UserRepository(
-   string connectionString
-) : BaseRepository(connectionString), IUserRepository
+   IOptions<RepositorySettings> options
+) : BaseRepository(options), IUserRepository
 {
    private readonly string queryManyString = @"
       SELECT

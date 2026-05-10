@@ -1,14 +1,14 @@
 using Api.Contracts;
+using Api.Settings;
 using Dapper;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace Api.Repositories;
 
-public class BaseRepository(
-   string connectionString
-) : IBaseRepository
+public class BaseRepository(IOptions<RepositorySettings> options) : IBaseRepository
 {
-   private readonly string _connectionString = connectionString;
+   private readonly string _connectionString = options.Value.ConnectionString;
 
    public async Task<IEnumerable<T>> GetMany<T>(string sql)
    {

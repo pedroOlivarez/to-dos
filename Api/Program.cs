@@ -1,7 +1,7 @@
 using Api.Contracts;
-using Api.Entities;
 using Api.Repositories;
 using Api.Services.Users;
+using Api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 // repos
-var connectionString = builder.Configuration.GetConnectionString("neon");
-if (!string.IsNullOrWhiteSpace(connectionString))
-{
-    // to-do: (lol) this feels wrong
-    builder.Services.AddSingleton<IBaseRepository>(
-        new BaseRepository(connectionString)
-    );
-    builder.Services.AddSingleton<IUserRepository>(
-        new UserRepository(connectionString)
-    );
-}
+builder.Services.Configure<RepositorySettings>(
+builder.Configuration.GetSection("Neon"));
+builder.Services.AddScoped<IBaseRepository, BaseRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 // services
 builder.Services.AddScoped<IUserService, UserService>();
