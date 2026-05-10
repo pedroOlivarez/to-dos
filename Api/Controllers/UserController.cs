@@ -1,3 +1,4 @@
+using Api.Dtos;
 using Api.Models;
 using Api.Services.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -16,5 +17,11 @@ public class UserController(
     public async Task<IEnumerable<UserModel>> Get()
     {
         return await _userService.GetMany();
+    }
+
+    [HttpPost(Name = "CreateUser")]
+    public async Task<UserModel> Create(UserInsertDto userInsertDto)
+    {
+        return await _userService.Create(userInsertDto);
     }
 }

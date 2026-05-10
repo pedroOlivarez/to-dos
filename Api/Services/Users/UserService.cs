@@ -1,4 +1,5 @@
 using Api.Contracts;
+using Api.Dtos;
 using Api.Models;
 
 namespace Api.Services.Users;
@@ -8,6 +9,7 @@ public class UserService(
 ) : IUserService
 {
    private readonly IUserRepository _userRepository = userRepository;
+
    public async Task<IEnumerable<UserModel>> GetMany()
    {
       var users = await _userRepository.GetMany();
@@ -18,5 +20,17 @@ public class UserService(
          LastName = u.LastName,
          Email = u.Email
       });
+   }
+
+   public async Task<UserModel> Create(UserInsertDto userInsertDto)
+   {
+      var user = await _userRepository.Create(userInsertDto);
+
+      return new UserModel
+      {
+         FirstName = user.FirstName,
+         LastName = user.LastName,
+         Email = user.Email
+      };
    }
 }

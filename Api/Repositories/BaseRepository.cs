@@ -10,9 +10,33 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
 {
    private readonly string _connectionString = options.Value.ConnectionString;
 
-   public async Task<IEnumerable<T>> GetMany<T>(string sql)
+   public async Task<T> GetById<T>(string Sql, int Id)
    {
       using var connection = new NpgsqlConnection(_connectionString);
-      return connection.Query<T>(sql);
+      return await connection.QueryFirstAsync<T>(Sql, new
+      {
+         Id
+      });
+   }
+
+   public async Task<IEnumerable<T>> GetMany<T>(string Sql)
+   {
+      using var connection = new NpgsqlConnection(_connectionString);
+      return await connection.QueryAsync<T>(Sql);
+   }
+
+   public async Task<int> Create(string Sql, object values)
+   {
+      using var connection = new NpgsqlConnection(_connectionString);
+      return await connection.ExecuteScalarAsync<int>(Sql, values);
+   }
+
+   public async Task Update(string Sql, int Id)
+   {
+      using var connection = new NpgsqlConnection(_connectionString);
+      await connection.ExecuteAsync(Sql, new
+      {
+         Id
+      });
    }
 }
