@@ -31,12 +31,9 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
       return await connection.ExecuteScalarAsync<int>(Sql, values);
    }
 
-   public async Task Update(string Sql, int Id)
+   public async Task Update(string Sql, object values)
    {
       using var connection = new NpgsqlConnection(_connectionString);
-      await connection.ExecuteAsync(Sql, new
-      {
-         Id
-      });
+      await connection.ExecuteAsync(Sql, values);
    }
 }

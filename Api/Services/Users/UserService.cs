@@ -33,4 +33,18 @@ public class UserService(
          Email = user.Email
       };
    }
+
+      public async Task<UserModel> Update(UserUpdateDto userUpdateDto)
+   {
+      await _userRepository.Update(userUpdateDto);
+
+      var user = await _userRepository.GetById(userUpdateDto.Id);
+
+      return new UserModel
+      {
+         FirstName = user.FirstName,
+         LastName = user.LastName,
+         Email = user.Email
+      };
+   }
 }

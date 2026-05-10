@@ -24,4 +24,10 @@ public class UserController(
     {
         return await _userService.Create(userInsertDto);
     }
+
+    [HttpPatch(Name = "PatchUser")]
+    public async Task<UserModel> Patch(UserUpdateDto userUpdateDto)
+    {
+        return await _userService.Update(userUpdateDto);
+    }
 }

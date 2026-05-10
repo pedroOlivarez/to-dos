@@ -8,4 +8,6 @@ public interface IUserService
    Task<IEnumerable<UserModel>> GetMany();
 
    Task<UserModel> Create(UserInsertDto userInsertDto);
+
+   Task<UserModel> Update(UserUpdateDto userUpdateDto);
 }

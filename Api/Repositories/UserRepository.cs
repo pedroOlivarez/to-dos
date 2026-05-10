@@ -43,9 +43,9 @@ public class UserRepository(
       return await base.GetById<User>(queryOneString, createdId);
    }
 
-   public Task<User> GetById(int Id)
+   public async Task<User> GetById(int id)
    {
-      throw new NotImplementedException();
+      return await base.GetById<User>(queryOneString, id);
    }
 
    public async Task<IEnumerable<User>> GetMany()
@@ -53,8 +53,29 @@ public class UserRepository(
       return await base.GetMany<User>(baseQueryString);
    }
 
-   public Task Update(UserUpdateDto updateUserDto)
+   public async Task Update(UserUpdateDto updateUserDto)
    {
-      throw new NotImplementedException();
+      List<string> updatedValues = [];
+
+      if (updateUserDto.FirstName is not null)
+      {
+         updatedValues.Add("first_name = @firstName");
+      }
+      if (updateUserDto.LastName is not null)
+      {
+         updatedValues.Add("last_name = @lastName");
+      }
+      if (updateUserDto.Email is not null)
+      {
+         updatedValues.Add("email = @email");
+      }
+
+      var updateSql = @$"
+         UPDATE public.users
+         SET {string.Join(",", updatedValues)}
+         WHERE Id = @Id
+      ";
+
+      await base.Update(updateSql, updateUserDto);
    }
 }

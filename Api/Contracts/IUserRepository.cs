@@ -7,7 +7,7 @@ public interface IUserRepository
 {
    public Task<IEnumerable<User>> GetMany();
 
-   public Task<User> GetById(int Id);
+   public Task<User> GetById(int id);
 
    public Task<User> Create(UserInsertDto insertUserDto);
 
