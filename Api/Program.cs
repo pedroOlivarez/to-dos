@@ -1,5 +1,6 @@
 using Api.Contracts;
 using Api.Repositories;
+using Api.Services.ToDo;
 using Api.Services.Users;
 using Api.Settings;
 
@@ -15,10 +16,12 @@ builder.Services.Configure<RepositorySettings>(
 builder.Configuration.GetSection("Neon"));
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 
 
 // services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IToDoService, ToDoService>();
 
 var app = builder.Build();
 
@@ -26,9 +29,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+} else
+{
+    app.UseHttpsRedirection();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

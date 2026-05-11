@@ -1,3 +1,5 @@
+using Api.Models;
+
 namespace Api.Entities;
 
 public class ToDo: BaseEntity
@@ -6,7 +8,18 @@ public class ToDo: BaseEntity
 
    public string? Body { get; set; }
 
-   public DateOnly CreatedAt { get; set; }
+   public DateTime CreatedAt { get; set; }
 
-   public required int CreatedBy { get; set; }
+   public DateTime UpdatedAt { get; set; }
+
+   public ToDoModel ToModel()
+   {
+      return new ToDoModel
+      {
+         Id = this.Id,
+         Title = this.Title,
+         Body = this.Body,
+         UpdatedAt = this.UpdatedAt
+      };
+   }
 }
