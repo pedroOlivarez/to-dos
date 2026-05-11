@@ -2,7 +2,7 @@ namespace Api.Contracts;
 
 public interface IBaseRepository
 {
-   public Task<IEnumerable<T>> GetMany<T>(string Sql);
+   public Task<(int Total, IEnumerable<T>)> GetMany<T>(string Sql, string tableName);
 
    public Task<T> GetById<T>(string Sql, int Id);
 

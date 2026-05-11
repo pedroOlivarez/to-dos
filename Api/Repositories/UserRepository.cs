@@ -50,7 +50,7 @@ public class UserRepository(
 
    public async Task<IEnumerable<User>> GetMany()
    {
-      return await base.GetMany<User>(baseQueryString);
+      throw new NotImplementedException();
    }
 
    public async Task Update(UserUpdateDto updateUserDto)

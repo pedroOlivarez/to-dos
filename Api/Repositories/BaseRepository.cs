@@ -19,10 +19,17 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
       });
    }
 
-   public async Task<IEnumerable<T>> GetMany<T>(string Sql)
+   public async Task<(int Total, IEnumerable<T>)> GetMany<T>(string Sql, string tableName)
    {
+      var countQuery = @$"
+         SELECT COUNT(id)
+         FROM {tableName}
+         WHERE archived = false
+      ";
       using var connection = new NpgsqlConnection(_connectionString);
-      return await connection.QueryAsync<T>(Sql);
+      var total = await connection.QueryFirstAsync<int>(countQuery);
+      var data = await connection.QueryAsync<T>(Sql);
+      return (total, data);
    }
 
    public async Task<int> Create(string Sql, object values)

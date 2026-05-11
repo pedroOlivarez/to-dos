@@ -1,6 +1,8 @@
 using Api.Contracts;
 using Api.Dtos;
 using Api.Models;
+using Api.Models.Requests;
+using Api.Models.Responses;
 
 namespace Api.Services.ToDo;
 
@@ -13,18 +15,23 @@ public class ToDoService(
     {
         var ToDo = await _toDoRepository.Create(toDoInsertDto);
 
-        return new ToDoModel
-        {
-            Id = ToDo.Id,
-            Title = ToDo.Title,
-            Body = ToDo.Body,
-            UpdatedAt = ToDo.UpdatedAt,
-        };
+        return ToDo.ToModel();
     }
 
-    public Task<IEnumerable<ToDoModel>> GetMany()
+    public async Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request)
     {
-        throw new NotImplementedException();
+        var (total, data) = await _toDoRepository.GetMany(request);
+        return new PaginatedResponse<ToDoModel>
+        {
+            Data = data.Select(d => d.ToModel()),
+            Meta = new Meta
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Count = data.Count(),
+                Total = total
+            }
+        };
     }
 
     public Task<ToDoModel> Update(ToDoUpdateDto toDoUpdateDto)

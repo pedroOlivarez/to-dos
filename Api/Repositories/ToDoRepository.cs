@@ -1,6 +1,7 @@
 using Api.Contracts;
 using Api.Dtos;
 using Api.Entities;
+using Api.Models.Requests;
 using Api.Settings;
 using Microsoft.Extensions.Options;
 
@@ -52,9 +53,14 @@ public class ToDoRepository(
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<ToDo>> GetMany()
+    public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request)
     {
-        throw new NotImplementedException();
+        var paginatedSql = @$"
+        {baseQueryString}
+        LIMIT {request.PageSize}
+        OFFSET {request.OffSet}
+        ";
+        return await base.GetMany<ToDo>(paginatedSql, tableName);
     }
 
     public Task Update(int id, ToDoUpdateDto toDoUpdateDto)

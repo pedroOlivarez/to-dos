@@ -1,11 +1,12 @@
 using Api.Dtos;
 using Api.Entities;
+using Api.Models.Requests;
 
 namespace Api.Contracts;
 
 public interface IToDoRepository
 {
-   public Task<IEnumerable<ToDo>> GetMany();
+   public Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request);
 
    public Task<ToDo> GetById(int id);
 

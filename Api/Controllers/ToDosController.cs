@@ -1,5 +1,7 @@
 using Api.Dtos;
 using Api.Models;
+using Api.Models.Requests;
+using Api.Models.Responses;
 using Api.Services.ToDo;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +16,11 @@ public class ToDosController(
     private readonly IToDoService _toDoService = toDoService;
 
     [HttpGet(Name = "GetTodos")]
-    public async Task<IEnumerable<UserModel>> Get()
+    public async Task<PaginatedResponse<ToDoModel>> Get(
+        [FromQuery] PaginatedRequest request
+    )
     {
-        return [];
+        return await _toDoService.GetMany(request);
     }
 
     [HttpPost(Name = "CreateToDo")]

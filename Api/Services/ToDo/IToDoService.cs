@@ -1,11 +1,13 @@
 using Api.Dtos;
 using Api.Models;
+using Api.Models.Requests;
+using Api.Models.Responses;
 
 namespace Api.Services.ToDo;
 
 public interface IToDoService
 {
-    Task<IEnumerable<ToDoModel>> GetMany();
+    Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request);
 
     Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto);
 
