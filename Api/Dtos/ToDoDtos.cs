@@ -12,6 +12,4 @@ public class ToDoUpdateDto
     public string? Title { get; set; }
 
     public string? Body { get; set; }
-
-    public required DateTime UpdatedAt { get; set; }
 }

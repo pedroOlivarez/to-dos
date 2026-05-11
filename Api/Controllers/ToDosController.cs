@@ -15,7 +15,7 @@ public class ToDosController(
 {
     private readonly IToDoService _toDoService = toDoService;
 
-    [HttpGet(Name = "GetTodos")]
+    [HttpGet]
     public async Task<PaginatedResponse<ToDoModel>> Get(
         [FromQuery] PaginatedRequest request
     )
@@ -23,15 +23,31 @@ public class ToDosController(
         return await _toDoService.GetMany(request);
     }
 
-    [HttpPost(Name = "CreateToDo")]
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<ToDoModel> GetById(int id)
+    {
+     return await _toDoService.GetById(id);   
+    }
+
+    [HttpPost]
     public async Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto)
     {
         return await _toDoService.Create(toDoInsertDto);
     }
 
-    // [HttpPatch(Name = "PatchUser")]
-    // public async Task<UserModel> Patch(UserUpdateDto userUpdateDto)
-    // {
-    //     return await _userService.Update(userUpdateDto);
-    // }
+    [HttpPatch]
+    [Route("{id}")]
+    public async Task<ToDoModel> Update(int id, ToDoUpdateDto toDoUpdateDto)
+    {
+        return await _toDoService.Update(id, toDoUpdateDto);
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<NoContentResult> Archive(int id)
+    {
+        await _toDoService.Archive(id);
+        return NoContent();
+    }
 }

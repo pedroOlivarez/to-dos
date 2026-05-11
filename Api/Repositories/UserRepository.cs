@@ -10,13 +10,14 @@ public class UserRepository(
    IOptions<RepositorySettings> options
 ) : BaseRepository(options), IUserRepository
 {
-   private static readonly string baseQueryString = @"
+   private static readonly string tableName = "public.users";
+   private static readonly string baseQueryString = @$"
       SELECT
          id as Id,
          first_name as FirstName,
          last_name as LastName,
          email as Email
-      FROM public.users
+      FROM {tableName}
    ";
 
    private static readonly string queryOneString = @$"
@@ -70,12 +71,6 @@ public class UserRepository(
          updatedValues.Add("email = @email");
       }
 
-      var updateSql = @$"
-         UPDATE public.users
-         SET {string.Join(",", updatedValues)}
-         WHERE Id = @Id
-      ";
-
-      await base.Update(updateSql, updateUserDto);
+      await base.Update(tableName, updatedValues, updateUserDto);
    }
 }

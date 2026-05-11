@@ -48,9 +48,9 @@ public class ToDoRepository(
         return await base.GetById<ToDo>(queryOneString, createdId);
     }
 
-    public Task<ToDo> GetById(int id)
+    public async Task<ToDo> GetById(int id)
     {
-        throw new NotImplementedException();
+        return await base.GetById<ToDo>(queryOneString, id);
     }
 
     public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request)
@@ -63,8 +63,31 @@ public class ToDoRepository(
         return await base.GetMany<ToDo>(paginatedSql, tableName);
     }
 
-    public Task Update(int id, ToDoUpdateDto toDoUpdateDto)
+    public async Task Update(int id, ToDoUpdateDto toDoUpdateDto)
     {
-        throw new NotImplementedException();
+        List<string> updatedValues = [];
+
+        if(toDoUpdateDto.Title is not null)
+        {
+            updatedValues.Add("title = @title");
+        }
+        if(toDoUpdateDto.Body is not null)
+        {
+            updatedValues.Add("body = @body");
+        }
+        updatedValues.Add("updated_at = @now");
+
+        await base.Update(tableName, updatedValues, new
+        {
+            id = id,
+            title = toDoUpdateDto.Title,
+            body = toDoUpdateDto.Body,
+            now = DateTime.UtcNow
+        });
+    }
+
+    public async Task Archive(int id)
+    {
+        await base.Archive(tableName, id);
     }
 }

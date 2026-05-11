@@ -8,5 +8,7 @@ public interface IBaseRepository
 
    public Task<int> Create(string Sql, object values);
 
-   public Task Update(string Sql, object values);
+   public Task Update(string tableName, IEnumerable<string> properties, object values);
+
+   public Task Archive(string tableName, int Id);
 }

@@ -18,6 +18,11 @@ public class ToDoService(
         return ToDo.ToModel();
     }
 
+    public async Task<ToDoModel> GetById(int id)
+    {
+        return (await _toDoRepository.GetById(id)).ToModel();
+    }
+
     public async Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request)
     {
         var (total, data) = await _toDoRepository.GetMany(request);
@@ -34,8 +39,15 @@ public class ToDoService(
         };
     }
 
-    public Task<ToDoModel> Update(ToDoUpdateDto toDoUpdateDto)
+    public async Task<ToDoModel> Update(int id, ToDoUpdateDto toDoUpdateDto)
     {
-        throw new NotImplementedException();
+        await _toDoRepository.Update(id, toDoUpdateDto);
+
+        return (await _toDoRepository.GetById(id)).ToModel();
+    }
+
+    public async Task Archive(int id)
+    {
+        await _toDoRepository.Archive(id);
     }
 }

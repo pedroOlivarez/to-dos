@@ -13,4 +13,6 @@ public interface IToDoRepository
    public Task<ToDo> Create(ToDoInsertDto toDoInsertDto);
 
    public Task Update(int id, ToDoUpdateDto toDoUpdateDto);
+
+   public Task Archive(int id);
 }

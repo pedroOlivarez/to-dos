@@ -38,9 +38,28 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
       return await connection.ExecuteScalarAsync<int>(Sql, values);
    }
 
-   public async Task Update(string Sql, object values)
+   public async Task Update(string tableName, IEnumerable<string> properties, object values)
    {
+      var updateSql = @$"
+         UPDATE {tableName}
+         SET {string.Join(",", properties)}
+         WHERE id = @id
+      ";
       using var connection = new NpgsqlConnection(_connectionString);
-      await connection.ExecuteAsync(Sql, values);
+      await connection.ExecuteAsync(updateSql, values);
+   }
+
+   public async Task Archive(string tableName, int id)
+   {
+      var archiveSql = @$"
+         UPDATE {tableName}
+         SET archived = true
+         WHERE id = @id
+      ";
+      using var connection = new NpgsqlConnection(_connectionString);
+      await connection.ExecuteAsync(archiveSql, new
+      {
+         id = id
+      });
    }
 }
