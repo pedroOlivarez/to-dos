@@ -6,7 +6,7 @@ public class ToDo: BaseEntity
 
    public string? Body { get; set; }
 
-   public DateOnly CreatedAt { get; set; }
+   public DateTime CreatedAt { get; set; }
 
-   public required int CreatedBy { get; set; }
+   public DateTime UpdatedAt { get; set; }
 }
