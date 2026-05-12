@@ -41,7 +41,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
             RETURNING id;
         ";
 
-        var createdId = await base.Create(
+        var createdId = await Create(
             insertSql,
             new
             {
@@ -51,12 +51,12 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
             }
         );
 
-        return await base.GetById<ToDo>(queryOneString, createdId);
+        return await GetById<ToDo>(queryOneString, createdId);
     }
 
     public async Task<ToDo> GetById(int id)
     {
-        return await base.GetById<ToDo>(queryOneString, id);
+        return await GetById<ToDo>(queryOneString, id);
     }
 
     public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request)
@@ -67,7 +67,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
         LIMIT {request.PageSize}
         OFFSET {request.OffSet}
         ";
-        return await base.GetMany<ToDo>(paginatedSql, tableName);
+        return await GetMany<ToDo>(paginatedSql, tableName);
     }
 
     public async Task Update(int id, ToDoUpdateDto toDoUpdateDto)
@@ -84,7 +84,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
         }
         updatedValues.Add("updated_at = @now");
 
-        await base.Update(
+        await Update(
             tableName,
             updatedValues,
             new
@@ -99,6 +99,6 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
 
     public async Task Archive(int id)
     {
-        await base.Archive(tableName, id);
+        await Archive(tableName, id);
     }
 }

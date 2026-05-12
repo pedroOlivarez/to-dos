@@ -34,6 +34,9 @@ public class ToDosController(IToDoService toDoService) : ControllerBase
 
     [HttpPatch]
     [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ToDoModel> Update(int id, ToDoUpdateDto toDoUpdateDto)
     {
         return await _toDoService.Update(id, toDoUpdateDto);
@@ -41,6 +44,9 @@ public class ToDosController(IToDoService toDoService) : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<NoContentResult> Archive(int id)
     {
         await _toDoService.Archive(id);

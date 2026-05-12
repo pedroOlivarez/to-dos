@@ -10,10 +10,11 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
 {
     private readonly string _connectionString = options.Value.ConnectionString;
 
-    public async Task<T> GetById<T>(string Sql, int Id)
+    public async Task<T> GetById<T>(string Sql, int id)
     {
         using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryFirstAsync<T>(Sql, new { Id });
+        return await connection.QueryFirstOrDefaultAsync<T?>(Sql, new { id })
+            ?? throw new KeyNotFoundException($"Entity with id {id} not found");
     }
 
     public async Task<(int Total, IEnumerable<T>)> GetMany<T>(string Sql, string tableName)
@@ -25,7 +26,7 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
          WHERE archived = false
       ";
         using var connection = new NpgsqlConnection(_connectionString);
-        var total = await connection.QueryFirstAsync<int>(countQuery);
+        var total = await connection.QueryFirstOrDefaultAsync<int>(countQuery);
         var data = await connection.QueryAsync<T>(Sql);
         return (total, data);
     }
