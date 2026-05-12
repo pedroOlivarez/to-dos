@@ -7,11 +7,9 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(
-    IUserService userService
-) : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly  IUserService _userService = userService;
+    private readonly IUserService _userService = userService;
 
     [HttpGet(Name = "GetUsers")]
     public async Task<IEnumerable<UserModel>> Get()
