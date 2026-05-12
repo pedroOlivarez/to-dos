@@ -37,7 +37,7 @@ public class UserRepository(IOptions<RepositorySettings> options)
          RETURNING id;
       ";
 
-        var createdId = await base.Create(
+        var createdId = await Create(
             insertSql,
             new
             {
@@ -47,12 +47,12 @@ public class UserRepository(IOptions<RepositorySettings> options)
             }
         );
 
-        return await base.GetById<User>(queryOneString, createdId);
+        return await GetById<User>(queryOneString, createdId);
     }
 
     public async Task<User> GetById(int id)
     {
-        return await base.GetById<User>(queryOneString, id);
+        return await GetById<User>(queryOneString, id);
     }
 
     public async Task<IEnumerable<User>> GetMany()
@@ -77,6 +77,6 @@ public class UserRepository(IOptions<RepositorySettings> options)
             updatedValues.Add("email = @email");
         }
 
-        await base.Update(tableName, updatedValues, updateUserDto);
+        await Update(tableName, updatedValues, updateUserDto);
     }
 }
