@@ -9,16 +9,12 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ToDosController(
-    IToDoService toDoService
-) : ControllerBase
+public class ToDosController(IToDoService toDoService) : ControllerBase
 {
     private readonly IToDoService _toDoService = toDoService;
 
     [HttpGet]
-    public async Task<PaginatedResponse<ToDoModel>> Get(
-        [FromQuery] PaginatedRequest request
-    )
+    public async Task<PaginatedResponse<ToDoModel>> Get([FromQuery] PaginatedRequest request)
     {
         return await _toDoService.GetMany(request);
     }
@@ -27,7 +23,7 @@ public class ToDosController(
     [Route("{id}")]
     public async Task<ToDoModel> GetById(int id)
     {
-     return await _toDoService.GetById(id);   
+        return await _toDoService.GetById(id);
     }
 
     [HttpPost]

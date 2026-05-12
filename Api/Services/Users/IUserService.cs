@@ -5,9 +5,9 @@ namespace Api.Services.Users;
 
 public interface IUserService
 {
-   Task<IEnumerable<UserModel>> GetMany();
+    Task<IEnumerable<UserModel>> GetMany();
 
-   Task<UserModel> Create(UserInsertDto userInsertDto);
+    Task<UserModel> Create(UserInsertDto userInsertDto);
 
-   Task<UserModel> Update(UserUpdateDto userUpdateDto);
+    Task<UserModel> Update(UserUpdateDto userUpdateDto);
 }

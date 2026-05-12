@@ -6,13 +6,13 @@ namespace Api.Contracts;
 
 public interface IToDoRepository
 {
-   public Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request);
+    public Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request);
 
-   public Task<ToDo> GetById(int id);
+    public Task<ToDo> GetById(int id);
 
-   public Task<ToDo> Create(ToDoInsertDto toDoInsertDto);
+    public Task<ToDo> Create(ToDoInsertDto toDoInsertDto);
 
-   public Task Update(int id, ToDoUpdateDto toDoUpdateDto);
+    public Task Update(int id, ToDoUpdateDto toDoUpdateDto);
 
-   public Task Archive(int id);
+    public Task Archive(int id);
 }
