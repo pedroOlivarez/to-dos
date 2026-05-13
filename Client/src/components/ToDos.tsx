@@ -3,6 +3,7 @@ import { PlusIcon } from "lucide-react";
 import { useToDos } from "../hooks/useToDos";
 import { AddEditToDoDialog } from "./todos/AddEditToDoDialog";
 import { create, type InsertToDo } from "../http/ToDo";
+import { cn } from "../libs/utils/classNames";
 
 export function ToDos(props: ComponentProps<"div">) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -17,7 +18,12 @@ export function ToDos(props: ComponentProps<"div">) {
   };
   return (
     <>
-      <div className="flex flex-col min-h-full w-full pl-2 pr-18">
+      <div
+        className={cn(
+          "flex flex-col min-h-full w-full pl-2 pr-18",
+          props.className,
+        )}
+      >
         {isLoading
           ? "Fetching to-dos..."
           : isError
