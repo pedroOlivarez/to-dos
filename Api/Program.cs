@@ -6,6 +6,7 @@ using Api.Services.Users;
 using Api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -23,7 +24,23 @@ builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 // services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            if (builder.Environment.IsDevelopment())
+            {
+                policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+            }
+            else
+            {
+                // in a production build, this would include trusted domains
+            }
+        }
+    );
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +53,7 @@ else
     app.UseHttpsRedirection();
 }
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.UseMiddleware<SystemMiddleware>();
 app.MapControllers();

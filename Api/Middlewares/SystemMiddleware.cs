@@ -9,6 +9,10 @@ public class SystemMiddleware(RequestDelegate next)
         var traceId = Guid.NewGuid();
         try
         {
+            // This will be logging...
+            Console.WriteLine(
+                $"Method {context.Request.Method} on path {context.Request.Path} called"
+            );
             await next(context);
         }
         catch (KeyNotFoundException ex)
