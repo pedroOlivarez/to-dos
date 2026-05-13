@@ -1,9 +1,12 @@
 const url = `${import.meta.env["VITE_API_URL"]}/toDos/`;
 
-type ToDo = {
-  id: number;
+type InsertToDo = {
   title: string;
-  body: string;
+  body?: string;
+};
+
+type ToDo = InsertToDo & {
+  id: number;
   updatedAt: Date;
 };
 
@@ -19,7 +22,7 @@ const getMany = async (): Promise<ToDo[]> => {
       const responseBody = await response.json();
       return responseBody.data as ToDo[];
     } else {
-      throw new Error("Server error");
+      return Promise.reject();
     }
   } catch (err) {
     console.error(err);
@@ -27,4 +30,29 @@ const getMany = async (): Promise<ToDo[]> => {
   }
 };
 
-export { getMany, type ToDo };
+const create = async (toDo: InsertToDo): Promise<ToDo> => {
+  try {
+    const response = await fetch(url, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(toDo),
+    });
+
+    if (response.ok) {
+      const todo: ToDo = await response.json();
+      return {
+        ...todo,
+        updatedAt: new Date(todo.updatedAt),
+      };
+    } else {
+      return Promise.reject();
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error creating ToDo");
+  }
+};
+
+export { create, getMany, type InsertToDo, type ToDo };

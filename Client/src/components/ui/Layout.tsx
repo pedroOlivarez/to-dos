@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { cn } from "../libs/utils/classNames";
+import { cn } from "../../libs/utils/classNames";
 
 export function Layout(props: ComponentProps<"div">) {
   return (
