@@ -2,7 +2,7 @@ import { useState, type ComponentProps } from "react";
 import { PlusIcon } from "lucide-react";
 import { useToDos } from "../hooks/useToDos";
 import { AddEditToDoDialog } from "./todos/AddEditToDoDialog";
-import { create, type InsertToDo } from "../http/ToDo";
+import { createToDo, type InsertToDo } from "../actions/ToDo";
 import { cn } from "../libs/utils/classNames";
 
 function AddToDoButton({ className, ...rest }: ComponentProps<"button">) {
@@ -29,7 +29,7 @@ export function ToDos(props: ComponentProps<"div">) {
   const { data, isLoading, isError } = useToDos(lastUpdated, []);
 
   const handleSubmit = async (data: InsertToDo) => {
-    const created = await create(data);
+    const created = await createToDo(data);
     setLastUpdated(created.updatedAt.toISOString());
   };
   return (

@@ -11,7 +11,7 @@ import { Field, FieldGroup } from "../ui/Field";
 import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
 import type { ComponentProps } from "react";
-import type { InsertToDo, ToDo } from "../../http/ToDo";
+import type { InsertToDo, ToDo } from "../../actions/ToDo";
 
 interface AddEditToDoDialogProps extends ComponentProps<typeof Dialog> {
   defaultValues?: ToDo;
