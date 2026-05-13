@@ -5,6 +5,22 @@ import { AddEditToDoDialog } from "./todos/AddEditToDoDialog";
 import { create, type InsertToDo } from "../http/ToDo";
 import { cn } from "../libs/utils/classNames";
 
+function AddToDoButton({ className, ...rest }: ComponentProps<"button">) {
+  return (
+    <button
+      className={cn(
+        "absolute flex items-center justify-center rounded-2xl p-7 bg-black/85 bottom-2 right-2 min-h-6 max-h-6 min-w-6 max-w-6",
+        className,
+      )}
+      {...rest}
+    >
+      <span>
+        <PlusIcon size={32} />
+      </span>
+    </button>
+  );
+}
+
 export function ToDos(props: ComponentProps<"div">) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>(
@@ -32,14 +48,7 @@ export function ToDos(props: ComponentProps<"div">) {
               ? data.map((d) => <div key={d.id}>{d.title}</div>)
               : null}
       </div>
-      <button
-        className="absolute flex items-center justify-center rounded-2xl p-7 bg-black/85 bottom-2 right-2 min-h-6 max-h-6 min-w-6 max-w-6"
-        onClick={() => setIsOpen(true)}
-      >
-        <span>
-          <PlusIcon size={32} />
-        </span>
-      </button>
+      <AddToDoButton onClick={() => setIsOpen(true)} />
       <AddEditToDoDialog
         open={isOpen}
         onOpenChange={setIsOpen}
