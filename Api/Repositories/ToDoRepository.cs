@@ -19,8 +19,9 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
             id,
             title,
             body,
+            completed,
             created_at as createdAt,
-            updated_at as updatedAt
+            updated_at as updatedAt,
         FROM {tableName}
         WHERE archived = false
     ";
@@ -82,6 +83,10 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
         {
             updatedValues.Add("body = @body");
         }
+        if (toDoUpdateDto.Completed is not null)
+        {
+            updatedValues.Add("completed = @completed");
+        }
         updatedValues.Add("updated_at = @now");
 
         await Update(
@@ -89,9 +94,10 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
             updatedValues,
             new
             {
-                id = id,
+                id,
                 title = toDoUpdateDto.Title,
                 body = toDoUpdateDto.Body,
+                completed = toDoUpdateDto.Completed,
                 now = DateTime.UtcNow,
             }
         );

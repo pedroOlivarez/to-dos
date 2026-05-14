@@ -9,11 +9,13 @@ type InsertToDo = {
 type ToDo = InsertToDo & {
   id: number;
   updatedAt: Date;
+  completed: boolean;
 };
 
 type UpdateToDo = {
   title?: string;
   body?: string;
+  completed?: boolean;
 };
 
 const getToDos = async (): Promise<ToDo[]> => {

@@ -12,14 +12,17 @@ public class ToDo : BaseEntity
 
     public DateTime UpdatedAt { get; set; }
 
+    public required bool Completed { get; set; }
+
     public ToDoModel ToModel()
     {
         return new ToDoModel
         {
-            Id = this.Id,
-            Title = this.Title,
-            Body = this.Body,
-            UpdatedAt = this.UpdatedAt,
+            Id = Id,
+            Title = Title,
+            Body = Body,
+            UpdatedAt = UpdatedAt,
+            Completed = Completed,
         };
     }
 }

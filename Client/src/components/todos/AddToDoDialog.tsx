@@ -23,8 +23,8 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
       <DialogContent className="sm:max-w-sm bg-black shadow-xl shadow-black">
         <form
           action={async (formData: FormData) => {
-            const title = formData.get("title")?.toString().trim();
-            const body = formData.get("body")?.toString().trim();
+            const title = formData.get("todo_title")?.toString().trim();
+            const body = formData.get("todo_body")?.toString().trim();
             if (!title) {
               // error handling
               return;

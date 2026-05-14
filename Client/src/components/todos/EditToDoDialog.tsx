@@ -31,8 +31,11 @@ export function EditToDoDialog({
       <DialogContent className="sm:max-w-sm bg-black shadow-xl shadow-black">
         <form
           action={async (formData: FormData) => {
-            const title = formData.get("title")?.toString().trim();
-            const body = formData.get("body")?.toString().trim();
+            const title = formData.get("todo_title")?.toString().trim();
+            const body = formData.get("todo_body")?.toString().trim();
+            const completed = Boolean(
+              formData.get("todo_completed")?.toString(),
+            );
             if (!title) {
               // error handling
               return;
@@ -46,6 +49,10 @@ export function EditToDoDialog({
             }
             if (body !== defaultValues.body) {
               data.body = body;
+              updated = true;
+            }
+            if (completed !== defaultValues.completed) {
+              data.completed = completed;
               updated = true;
             }
             if (!updated) return;
@@ -72,6 +79,15 @@ export function EditToDoDialog({
                 id="body"
                 name="todo_body"
                 defaultValue={defaultValues.body}
+              />
+            </Field>
+            <Field>
+              <Label htmlFor="completed">Completed</Label>
+              <Input
+                type="checkbox"
+                id="completed"
+                name="todo_completed"
+                defaultChecked={defaultValues.completed}
               />
             </Field>
           </FieldGroup>
