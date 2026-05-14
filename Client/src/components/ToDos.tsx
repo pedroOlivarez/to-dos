@@ -1,8 +1,8 @@
 import { useState, type ComponentProps } from "react";
 import { PlusIcon } from "lucide-react";
 import { useToDos } from "../hooks/useToDos";
-import { AddToDoDialog } from "./todos/AddToDoDialog";
-import { EditToDoDialog } from "./todos/EditToDoDialog";
+import { AddToDoDialog } from "./todos/AddToDoDialog/AddToDoDialog";
+import { EditToDoDialog } from "./todos/EditToDoDialog/EditToDoDialog";
 import {
   createToDo,
   updateToDo,
