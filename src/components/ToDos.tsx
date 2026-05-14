@@ -46,7 +46,7 @@ function ResultDisplay({
   ) : isError ? (
     "Oops, an error occurred"
   ) : toDos && toDos.length ? (
-    <div className="flex flex-row gap-2 flex-wrap">
+    <div className="flex sm:flex-row flex-col gap-2 flex-wrap">
       {toDos.map((td) => (
         <ToDo onClick={onSelectToDo} key={td.id} toDo={td} />
       ))}
@@ -101,7 +101,7 @@ export function ToDos(props: ComponentProps<"div">) {
     <>
       <div
         className={cn(
-          "flex flex-col min-h-full w-full p-2 pr-18",
+          "flex flex-col min-h-full w-full p-2 pr-18 sm:items-start  items-center",
           props.className,
         )}
       >

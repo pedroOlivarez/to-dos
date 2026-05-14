@@ -12,7 +12,7 @@ export function ToDo({ toDo, onClick, ...rest }: ToDoProps) {
     <div
       {...rest}
       className={cn(
-        "flex flex-col p-4 min-h-48 max-h-48 min-w-40 max-w-40 gap-2 justify-between shadow-md shadow-black",
+        "flex flex-col p-4 sm:min-h-48 sm:max-h-48 min-h-64 max-h-64 sm:min-w-40 sm:max-w-40 min-w-60 max-w-60 gap-2 justify-between shadow-md shadow-black",
         toDo.completed ? "bg-fuchsia-400/70" : "bg-fuchsia-400",
         rest.className,
       )}
