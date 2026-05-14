@@ -15,6 +15,10 @@
 
 - https://nodejs.org/en/download
 
+4. Install dependencies
+
+- In a terminal run `npm i`
+
 ## API
 
 1. Open terminal
