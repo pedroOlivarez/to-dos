@@ -76,7 +76,7 @@ export function EditToDoDialog({
                 defaultValue={defaultValues.body}
               />
             </Field>
-            <Field>
+            <Field className="flex flex-row">
               <Label htmlFor="completed">Completed</Label>
               <Input
                 type="checkbox"
@@ -84,6 +84,7 @@ export function EditToDoDialog({
                 name="todo_completed"
                 onBlur={validateCompleted}
                 defaultChecked={defaultValues.completed}
+                className="min-h-6 max-h-6 min-w-6 max-w-6 "
               />
             </Field>
           </FieldGroup>
