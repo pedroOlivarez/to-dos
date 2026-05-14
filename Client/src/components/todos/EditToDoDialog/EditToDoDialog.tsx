@@ -87,7 +87,7 @@ export function EditToDoDialog({
                 type="checkbox"
                 id="completed"
                 name="todo_completed"
-                onBlur={validateCompleted}
+                onClick={validateCompleted}
                 defaultChecked={defaultValues.completed}
                 className="min-h-6 max-h-6 min-w-6 max-w-6 "
               />

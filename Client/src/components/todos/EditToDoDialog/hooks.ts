@@ -50,11 +50,10 @@ export default function useEditToDoDialog({
     }));
   };
 
-  const validateCompleted = (e: FocusEvent<HTMLInputElement, Element>) => {
-    const completed = Boolean(e.currentTarget.value.trim());
+  const validateCompleted = () => {
     setCurrentState((prev) => ({
       ...prev,
-      completed,
+      completed: !prev.completed,
     }));
   };
 
