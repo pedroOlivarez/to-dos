@@ -10,7 +10,7 @@ import {
 import { Field, FieldGroup } from "../../ui/Field";
 import { Input } from "../../ui/Input";
 import { Label } from "../../ui/Label";
-import { useState, type ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import type { InsertToDo } from "../../../actions/ToDo";
 import useAddToDoDialog from "./hooks";
 
@@ -21,14 +21,12 @@ interface AddToDoDialog extends ComponentProps<typeof Dialog> {
 export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
   const { errors, formIsValid, validateTitle, handleFormSubmit, reset } =
     useAddToDoDialog({ onSubmit });
-  const [formIsTouched, setFormIstouched] = useState<boolean>(false);
 
   return (
     <Dialog
       onOpenChange={(newOpen, eventDetails) => {
         rest.onOpenChange?.(newOpen, eventDetails);
         reset();
-        setFormIstouched(false);
       }}
       {...rest}
     >
@@ -43,10 +41,6 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
               <Input
                 id="title"
                 name="todo_title"
-                onInput={() => {
-                  console.log("CALLING TITLE CHANGE");
-                  if (!formIsTouched) setFormIstouched(true);
-                }}
                 onBlur={validateTitle}
                 className={errors.title ? "border border-red-400" : ""}
                 placeholder={
@@ -56,23 +50,12 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
             </Field>
             <Field>
               <Label htmlFor="body">Body</Label>
-              <Input
-                id="body"
-                name="todo_body"
-                onInput={() => {
-                  console.log("CALLING BODY CHANGE");
-                  if (!formIsTouched) setFormIstouched(true);
-                }}
-              />
+              <Input id="body" name="todo_body" />
             </Field>
           </FieldGroup>
           <DialogFooter>
             <DialogClose render={<Button variant="outline">Cancel</Button>} />
-            <Button
-              variant="default"
-              type="submit"
-              disabled={!formIsTouched || !formIsValid}
-            >
+            <Button variant="default" type="submit" disabled={!formIsValid}>
               Save changes
             </Button>
           </DialogFooter>
