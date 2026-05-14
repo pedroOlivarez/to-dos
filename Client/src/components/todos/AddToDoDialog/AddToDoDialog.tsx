@@ -19,14 +19,21 @@ interface AddToDoDialog extends ComponentProps<typeof Dialog> {
 }
 
 export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
-  const { errors, formIsValid, validateTitle, handleFormSubmit, reset } =
-    useAddToDoDialog({ onSubmit });
+  const {
+    errors,
+    formIsTouched,
+    formIsValid,
+    validateTitle,
+    validateBody,
+    handleFormSubmit,
+    reset,
+  } = useAddToDoDialog({ onSubmit });
 
   return (
     <Dialog
       onOpenChange={(newOpen, eventDetails) => {
-        rest.onOpenChange?.(newOpen, eventDetails);
         reset();
+        rest.onOpenChange?.(newOpen, eventDetails);
       }}
       {...rest}
     >
@@ -50,12 +57,16 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
             </Field>
             <Field>
               <Label htmlFor="body">Body</Label>
-              <Input id="body" name="todo_body" />
+              <Input id="body" name="todo_body" onBlur={validateBody} />
             </Field>
           </FieldGroup>
           <DialogFooter>
             <DialogClose render={<Button variant="outline">Cancel</Button>} />
-            <Button variant="default" type="submit" disabled={!formIsValid}>
+            <Button
+              variant="default"
+              type="submit"
+              disabled={!formIsTouched || !formIsValid}
+            >
               Save changes
             </Button>
           </DialogFooter>

@@ -43,8 +43,8 @@ export function EditToDoDialog({
   return (
     <Dialog
       onOpenChange={(newOpen, eventDetails) => {
-        rest.onOpenChange?.(newOpen, eventDetails);
         reset();
+        rest.onOpenChange?.(newOpen, eventDetails);
       }}
       {...rest}
     >

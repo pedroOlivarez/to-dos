@@ -13,7 +13,7 @@ export function ToDo({ toDo, onClick, ...rest }: ToDoProps) {
       {...rest}
       className={cn(
         "flex flex-col p-4 min-h-48 max-h-48 min-w-40 max-w-40 gap-2 justify-between shadow-md shadow-black",
-        toDo.completed ? "bg-teal-400/80" : "bg-fuchsia-400",
+        toDo.completed ? "bg-fuchsia-400/70" : "bg-fuchsia-400",
         rest.className,
       )}
       onClick={() => {

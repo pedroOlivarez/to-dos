@@ -9,6 +9,14 @@ export default function useAddToDoDialog({
   const [errors, setErrors] = useState<Record<string, boolean>>({
     title: false,
   });
+  const [currentState, setCurrentState] = useState<InsertToDo>({
+    title: "",
+    body: "",
+  });
+
+  const formIsTouched = useMemo(() => {
+    return currentState.title || currentState.body;
+  }, [currentState]);
 
   const formIsValid = useMemo(() => {
     for (const value of Object.values(errors)) {
@@ -19,9 +27,21 @@ export default function useAddToDoDialog({
 
   const validateTitle = (e: FocusEvent<HTMLInputElement, Element>) => {
     const title = e.currentTarget.value.trim();
+    setCurrentState((prev) => ({
+      ...prev,
+      title,
+    }));
     setErrors((prev) => ({
       ...prev,
       title: !title,
+    }));
+  };
+
+  const validateBody = (e: FocusEvent<HTMLInputElement, Element>) => {
+    const body = e.currentTarget.value.trim();
+    setCurrentState((prev) => ({
+      ...prev,
+      body,
     }));
   };
 
@@ -44,12 +64,18 @@ export default function useAddToDoDialog({
     setErrors({
       title: false,
     });
+    setCurrentState({
+      title: "",
+      body: "",
+    });
   };
 
   return {
     errors,
+    formIsTouched,
     formIsValid,
     validateTitle,
+    validateBody,
     handleFormSubmit,
     reset,
   };

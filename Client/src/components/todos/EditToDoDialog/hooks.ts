@@ -12,9 +12,9 @@ export default function useEditToDoDialog({
     title: false,
   });
   const [currentState, setCurrentState] = useState<UpdateToDo>({
+    title: defaultValues.title,
     body: defaultValues.body,
     completed: defaultValues.completed,
-    title: defaultValues.title,
   });
   const formIsTouched = useMemo(() => {
     return (
@@ -49,6 +49,7 @@ export default function useEditToDoDialog({
       body,
     }));
   };
+
   const validateCompleted = (e: FocusEvent<HTMLInputElement, Element>) => {
     const completed = Boolean(e.currentTarget.value.trim());
     setCurrentState((prev) => ({
