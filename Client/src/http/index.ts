@@ -1,4 +1,4 @@
-const url = `${import.meta.env["VITE_API_URL"]}/toDos/`;
+const url = `${import.meta.env["VITE_API_URL"]}/toDos`;
 
 async function getMany<T>(): Promise<T[]> {
   try {

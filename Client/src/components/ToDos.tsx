@@ -1,8 +1,14 @@
 import { useState, type ComponentProps } from "react";
 import { PlusIcon } from "lucide-react";
 import { useToDos } from "../hooks/useToDos";
-import { AddEditToDoDialog } from "./todos/AddEditToDoDialog";
-import { createToDo, type InsertToDo } from "../actions/ToDo";
+import { AddToDoDialog } from "./todos/AddToDoDialog";
+import { EditToDoDialog } from "./todos/EditToDoDialog";
+import {
+  createToDo,
+  updateToDo,
+  type InsertToDo,
+  type UpdateToDo,
+} from "../actions/ToDo";
 import { cn } from "../libs/utils/classNames";
 import { ToDo } from "./todos/ToDo";
 import { type ToDo as ToDoType } from "../actions/ToDo";
@@ -27,10 +33,12 @@ function ResultDisplay({
   toDos,
   isLoading,
   isError,
+  onSelectToDo,
 }: {
   toDos: ToDoType[];
   isLoading: boolean;
   isError: boolean;
+  onSelectToDo: (id: number) => void;
 }) {
   return isLoading ? (
     "Fetching to-dos..."
@@ -39,21 +47,44 @@ function ResultDisplay({
   ) : toDos && toDos.length ? (
     <div className="flex flex-row gap-2 flex-wrap">
       {toDos.map((td) => (
-        <ToDo key={td.id} toDo={td} />
+        <ToDo onClick={onSelectToDo} key={td.id} toDo={td} />
       ))}
     </div>
   ) : null;
 }
+type Modal = "ADD_TODO" | "EDIT_TODO";
+
+const TODO_MODALS: Record<string, Modal> = {
+  ADD: "ADD_TODO",
+  EDIT: "EDIT_TODO",
+};
 
 export function ToDos(props: ComponentProps<"div">) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modal, setModal] = useState<Modal | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>(
-    new Date().toDateString(),
+    new Date().toISOString(),
   );
+  const [selectedToDo, setSelectedToDo] = useState<ToDoType | null>(null);
   const { data, isLoading, isError } = useToDos(lastUpdated, []);
 
-  const handleSubmit = async (data: InsertToDo) => {
+  const handleSelectToDo = (id: number) => {
+    const toDo = data.find((t) => t.id === id);
+    if (toDo) {
+      setSelectedToDo(toDo);
+      setModal(TODO_MODALS.EDIT);
+    }
+  };
+
+  const handleUpdate = async (id: number, data: UpdateToDo) => {
+    const updated = await updateToDo(id, data);
+    setLastUpdated(updated.updatedAt.toISOString());
+    setModal(null);
+    setSelectedToDo(null);
+  };
+
+  const handleCreate = async (data: InsertToDo) => {
     const created = await createToDo(data);
+    setModal(null);
     setLastUpdated(created.updatedAt.toISOString());
   };
   return (
@@ -64,13 +95,33 @@ export function ToDos(props: ComponentProps<"div">) {
           props.className,
         )}
       >
-        <ResultDisplay toDos={data} isLoading={isLoading} isError={isError} />
+        <ResultDisplay
+          onSelectToDo={handleSelectToDo}
+          toDos={data}
+          isLoading={isLoading}
+          isError={isError}
+        />
       </div>
-      <AddToDoButton onClick={() => setIsOpen(true)} />
-      <AddEditToDoDialog
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        onSubmit={handleSubmit}
+      <AddToDoButton onClick={() => setModal(TODO_MODALS.ADD)} />
+      <AddToDoDialog
+        open={modal === "ADD_TODO"}
+        onOpenChange={(newOpen) => {
+          if (!newOpen) {
+            setModal(null);
+          }
+        }}
+        onSubmit={handleCreate}
+      />
+      <EditToDoDialog
+        open={modal === "EDIT_TODO"}
+        onOpenChange={(newOpen) => {
+          if (!newOpen) {
+            setModal(null);
+            setSelectedToDo(null);
+          }
+        }}
+        defaultValues={selectedToDo}
+        onSubmit={handleUpdate}
       />
     </>
   );

@@ -10,33 +10,25 @@ import {
 import { Field, FieldGroup } from "../ui/Field";
 import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
-import type { ComponentProps } from "react";
-import type { InsertToDo, ToDo } from "../../actions/ToDo";
+import { type ComponentProps } from "react";
+import type { InsertToDo } from "../../actions/ToDo";
 
-interface AddEditToDoDialogProps extends ComponentProps<typeof Dialog> {
-  defaultValues?: ToDo;
+interface AddToDoDialog extends ComponentProps<typeof Dialog> {
   onSubmit: (data: InsertToDo) => void;
 }
 
-export function AddEditToDoDialog({
-  defaultValues,
-  onSubmit,
-  ...rest
-}: AddEditToDoDialogProps) {
-  const isEdit = !!defaultValues?.id;
-
+export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
   return (
     <Dialog {...rest}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="sm:max-w-sm bg-black shadow-xl shadow-black">
         <form
           action={async (formData: FormData) => {
-            const title = formData.get("title")?.toString();
-            const body = formData.get("body")?.toString();
+            const title = formData.get("title")?.toString().trim();
+            const body = formData.get("body")?.toString().trim();
             if (!title) {
               // error handling
               return;
             }
-
             const data: InsertToDo = {
               title,
               body,
@@ -47,33 +39,23 @@ export function AddEditToDoDialog({
           className="flex flex-col gap-6"
         >
           <DialogHeader>
-            <DialogTitle>{isEdit ? "Edit" : "Create"} To-Do</DialogTitle>
+            <DialogTitle>Create To-Do</DialogTitle>
           </DialogHeader>
           <FieldGroup>
             <Field>
               <Label htmlFor="title">Title</Label>
-              <Input
-                name="title"
-                defaultValue={isEdit ? defaultValues.title : undefined}
-              />
+              <Input id="title" name="todo_title" />
             </Field>
             <Field>
               <Label htmlFor="body">Body</Label>
-              <Input
-                name="body"
-                defaultValue={isEdit ? defaultValues.body : undefined}
-              />
+              <Input id="body" name="todo_body" />
             </Field>
           </FieldGroup>
           <DialogFooter>
             <DialogClose render={<Button variant="outline">Cancel</Button>} />
-            <DialogClose
-              render={
-                <Button variant="default" type="submit">
-                  Save changes
-                </Button>
-              }
-            />
+            <Button variant="default" type="submit">
+              Save changes
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

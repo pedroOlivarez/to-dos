@@ -51,4 +51,5 @@ export {
   archiveToDo,
   type InsertToDo,
   type ToDo,
+  type UpdateToDo,
 };
