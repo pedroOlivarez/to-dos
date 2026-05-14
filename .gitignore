@@ -2,3 +2,6 @@
 Api/bin
 Api/obj
 Api/appsettings.Development.json
+
+Client/node_modules
+Client/.env.local

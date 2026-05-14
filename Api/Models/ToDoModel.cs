@@ -9,4 +9,6 @@ public class ToDoModel
     public string? Body { get; set; }
 
     public required DateTime UpdatedAt { get; set; }
+
+    public required bool Completed { get; set; }
 }

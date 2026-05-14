@@ -1,4 +1,15 @@
 install dotnet sdk
-get connection string to neon somehow from Pedro somehow
-cd api
-dotnet run
+https://dotnet.microsoft.com/en-us/download/dotnet/10.0
+in Api directory
+create a copy of appsettings.json and name it appsettings.Development.json
+request invite to neon.tech workspace to get access to connectionstring and paste value under "Neon": {"ConnectionString"}
+
+## terminal 1
+
+`cd Api`
+`dotnet run`
+
+## terminal 2
+
+`cd Client`
+`npm run dev`
