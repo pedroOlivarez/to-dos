@@ -4,6 +4,7 @@ import { useToDos } from "../hooks/useToDos";
 import { AddToDoDialog } from "./todos/AddToDoDialog/AddToDoDialog";
 import { EditToDoDialog } from "./todos/EditToDoDialog/EditToDoDialog";
 import {
+  archiveToDo,
   createToDo,
   updateToDo,
   type InsertToDo,
@@ -89,6 +90,13 @@ export function ToDos(props: ComponentProps<"div">) {
     setModal(null);
     setLastUpdated(created.updatedAt.toISOString());
   };
+
+  const handleArchive = async (id: number) => {
+    await archiveToDo(id);
+    setModal(null);
+    setSelectedToDo(null);
+    setLastUpdated(new Date().toISOString());
+  };
   return (
     <>
       <div
@@ -124,6 +132,7 @@ export function ToDos(props: ComponentProps<"div">) {
         }}
         defaultValues={selectedToDo}
         onSubmit={handleUpdate}
+        onArchive={handleArchive}
       />
     </>
   );

@@ -17,11 +17,13 @@ import useEditToDoDialog from "./hooks";
 interface EditToDoDialog extends ComponentProps<typeof Dialog> {
   defaultValues: ToDo | null;
   onSubmit: (id: number, data: UpdateToDo) => void;
+  onArchive: (id: number) => void;
 }
 
 export function EditToDoDialog({
   defaultValues,
   onSubmit,
+  onArchive,
   ...rest
 }: EditToDoDialog) {
   if (!defaultValues) {
@@ -39,7 +41,10 @@ export function EditToDoDialog({
     reset,
   } = useEditToDoDialog({ defaultValues, onSubmit });
 
-  console.log(defaultValues);
+  const handleArchive = () => {
+    onArchive(defaultValues.id);
+  };
+
   return (
     <Dialog
       onOpenChange={(newOpen, eventDetails) => {
@@ -90,6 +95,9 @@ export function EditToDoDialog({
           </FieldGroup>
           <DialogFooter>
             <DialogClose render={<Button variant="outline">Cancel</Button>} />
+            <Button variant="destructive" onClick={handleArchive}>
+              Archive
+            </Button>
             <Button
               variant="default"
               type="submit"
