@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 type UseQueryArgs<T> = {
   queryKey: string;
   queryFn: () => Promise<T>;
-  initialData: T;
 };
 
-function useQuery<T>({ queryFn, queryKey, initialData }: UseQueryArgs<T>) {
-  const [data, setData] = useState<T>(initialData);
+function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
+  const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 

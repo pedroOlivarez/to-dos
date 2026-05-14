@@ -2,7 +2,6 @@ using Api.Contracts;
 using Api.Middlewares;
 using Api.Repositories;
 using Api.Services.ToDo;
-using Api.Services.Users;
 using Api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,11 +17,9 @@ builder.Services.AddOpenApi();
 // repos
 builder.Services.Configure<RepositorySettings>(builder.Configuration.GetSection("Neon"));
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 
 // services
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
 builder.Services.AddCors(options =>
 {

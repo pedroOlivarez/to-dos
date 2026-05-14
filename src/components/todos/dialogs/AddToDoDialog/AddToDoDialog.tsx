@@ -1,4 +1,4 @@
-import { Button } from "../../ui/Button";
+import { Button } from "../../../ui/Button";
 import {
   Dialog,
   DialogClose,
@@ -6,40 +6,30 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../ui/Dialog";
-import { Field, FieldGroup } from "../../ui/Field";
-import { Input } from "../../ui/Input";
-import { Label } from "../../ui/Label";
+} from "../../../ui/Dialog";
+import { Field, FieldGroup } from "../../../ui/Field";
+import { Input } from "../../../ui/Input";
+import { Label } from "../../../ui/Label";
 import { type ComponentProps } from "react";
-import type { UpdateToDo, ToDo } from "../../../actions/ToDo";
-import useEditToDoDialog from "./hooks";
+import type { InsertToDo } from "../../../../actions/ToDo";
+import useAddToDoDialog from "./hooks";
 
-interface EditToDoDialog extends ComponentProps<typeof Dialog> {
-  defaultValues: ToDo | null;
-  onSubmit: (id: number, data: UpdateToDo) => void;
+interface AddToDoDialog extends ComponentProps<typeof Dialog> {
+  onSubmit: (data: InsertToDo) => Promise<void>;
 }
 
-export function EditToDoDialog({
-  defaultValues,
-  onSubmit,
-  ...rest
-}: EditToDoDialog) {
-  if (!defaultValues) {
-    return null;
-  }
-
+export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
   const {
     errors,
     formIsTouched,
     formIsValid,
+    isSubmitting,
     validateTitle,
     validateBody,
-    validateCompleted,
     handleFormSubmit,
     reset,
-  } = useEditToDoDialog({ defaultValues, onSubmit });
+  } = useAddToDoDialog({ onSubmit });
 
-  console.log(defaultValues);
   return (
     <Dialog
       onOpenChange={(newOpen, eventDetails) => {
@@ -51,7 +41,7 @@ export function EditToDoDialog({
       <DialogContent className="sm:max-w-sm bg-black shadow-xl shadow-black">
         <form action={handleFormSubmit} className="flex flex-col gap-6">
           <DialogHeader>
-            <DialogTitle>Update To-Do</DialogTitle>
+            <DialogTitle>Create To-Do</DialogTitle>
           </DialogHeader>
           <FieldGroup>
             <Field>
@@ -64,28 +54,11 @@ export function EditToDoDialog({
                 placeholder={
                   errors.title ? "Title field is required" : undefined
                 }
-                defaultValue={defaultValues.title}
               />
             </Field>
             <Field>
               <Label htmlFor="body">Body</Label>
-              <Input
-                id="body"
-                name="todo_body"
-                onBlur={validateBody}
-                defaultValue={defaultValues.body}
-              />
-            </Field>
-            <Field className="flex flex-row">
-              <Label htmlFor="completed">Completed</Label>
-              <Input
-                type="checkbox"
-                id="completed"
-                name="todo_completed"
-                onBlur={validateCompleted}
-                defaultChecked={defaultValues.completed}
-                className="min-h-6 max-h-6 min-w-6 max-w-6 "
-              />
+              <Input id="body" name="todo_body" onBlur={validateBody} />
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -93,7 +66,7 @@ export function EditToDoDialog({
             <Button
               variant="default"
               type="submit"
-              disabled={!formIsTouched || !formIsValid}
+              disabled={!formIsTouched || !formIsValid || isSubmitting}
             >
               Save changes
             </Button>

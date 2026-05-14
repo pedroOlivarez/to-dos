@@ -1,28 +1,24 @@
 import { useMemo, useState, type FocusEvent } from "react";
-import type { ToDo, UpdateToDo } from "../../../actions/ToDo";
+import type { InsertToDo } from "../../../../actions/ToDo";
 
-export default function useEditToDoDialog({
-  defaultValues,
+export default function useAddToDoDialog({
   onSubmit,
 }: {
-  defaultValues: ToDo;
-  onSubmit: (id: number, data: UpdateToDo) => void;
+  onSubmit: (data: InsertToDo) => Promise<void>;
 }) {
   const [errors, setErrors] = useState<Record<string, boolean>>({
     title: false,
   });
-  const [currentState, setCurrentState] = useState<UpdateToDo>({
-    title: defaultValues.title,
-    body: defaultValues.body,
-    completed: defaultValues.completed,
+  const [currentState, setCurrentState] = useState<InsertToDo>({
+    title: "",
+    body: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const formIsTouched = useMemo(() => {
-    return (
-      currentState.title !== defaultValues.title ||
-      currentState.body !== defaultValues.body ||
-      currentState.completed !== defaultValues.completed
-    );
-  }, [currentState, defaultValues]);
+    return currentState.title || currentState.body;
+  }, [currentState]);
+
   const formIsValid = useMemo(() => {
     for (const value of Object.values(errors)) {
       if (value) return false;
@@ -50,56 +46,40 @@ export default function useEditToDoDialog({
     }));
   };
 
-  const validateCompleted = (e: FocusEvent<HTMLInputElement, Element>) => {
-    const completed = Boolean(e.currentTarget.value.trim());
-    setCurrentState((prev) => ({
-      ...prev,
-      completed,
-    }));
-  };
-
   const handleFormSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
     const title = formData.get("todo_title")?.toString().trim();
     const body = formData.get("todo_body")?.toString().trim();
-    const completed = Boolean(formData.get("todo_completed")?.toString());
     if (!title) {
       console.error("Attempted to submit without required fields");
       return;
     }
-    let updated = false;
-    const data: UpdateToDo = {};
+    const data: InsertToDo = {
+      title,
+      body,
+    };
 
-    if (title !== defaultValues.title) {
-      data.title = title;
-      updated = true;
-    }
-    if (body !== defaultValues.body) {
-      data.body = body;
-      updated = true;
-    }
-    if (completed !== defaultValues.completed) {
-      data.completed = completed;
-      updated = true;
-    }
-    if (!updated) return;
-
-    onSubmit(defaultValues.id, data);
+    await onSubmit(data);
+    setIsSubmitting(false);
   };
 
   const reset = () => {
     setErrors({
       title: false,
     });
-    setCurrentState({});
+    setCurrentState({
+      title: "",
+      body: "",
+    });
   };
 
   return {
     errors,
     formIsTouched,
     formIsValid,
+    isSubmitting,
     validateTitle,
     validateBody,
-    validateCompleted,
     handleFormSubmit,
     reset,
   };

@@ -1,10 +1,11 @@
 {
-  "name": "conway",
+  "name": "to-dos",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:api": "dotnet watch --project ./Api/api.csproj",
+    "dev:ui": " vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

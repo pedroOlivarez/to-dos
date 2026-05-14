@@ -6,8 +6,9 @@ request invite to neon.tech workspace to get access to connectionstring and past
 
 ## terminal 1
 
-`cd Api`
-`dotnet run`
+`dotnet run --project ./Api/api.csproj`
+if working on the api
+`dotnet watch --project ./Api/api.csproj`
 
 ## terminal 2
 
