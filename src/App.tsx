@@ -1,5 +1,5 @@
 import { Layout } from "./components/ui/Layout";
-import { ToDos } from "./components/ToDos";
+import { ToDos } from "./components/todos/views/ToDos";
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import { Button } from "../../ui/Button";
+import { Button } from "../../../ui/Button";
 import {
   Dialog,
   DialogClose,
@@ -6,12 +6,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../ui/Dialog";
-import { Field, FieldGroup } from "../../ui/Field";
-import { Input } from "../../ui/Input";
-import { Label } from "../../ui/Label";
+} from "../../../ui/Dialog";
+import { Field, FieldGroup } from "../../../ui/Field";
+import { Input } from "../../../ui/Input";
+import { Label } from "../../../ui/Label";
 import { type ComponentProps } from "react";
-import type { UpdateToDo, ToDo } from "../../../actions/ToDo";
+import type { UpdateToDo, ToDo } from "../../../../actions/ToDo";
 import useEditToDoDialog from "./hooks";
 
 interface EditToDoDialog extends ComponentProps<typeof Dialog> {

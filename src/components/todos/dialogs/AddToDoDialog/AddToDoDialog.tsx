@@ -1,4 +1,4 @@
-import { Button } from "../../ui/Button";
+import { Button } from "../../../ui/Button";
 import {
   Dialog,
   DialogClose,
@@ -6,12 +6,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../ui/Dialog";
-import { Field, FieldGroup } from "../../ui/Field";
-import { Input } from "../../ui/Input";
-import { Label } from "../../ui/Label";
+} from "../../../ui/Dialog";
+import { Field, FieldGroup } from "../../../ui/Field";
+import { Input } from "../../../ui/Input";
+import { Label } from "../../../ui/Label";
 import { type ComponentProps } from "react";
-import type { InsertToDo } from "../../../actions/ToDo";
+import type { InsertToDo } from "../../../../actions/ToDo";
 import useAddToDoDialog from "./hooks";
 
 interface AddToDoDialog extends ComponentProps<typeof Dialog> {
