@@ -15,7 +15,7 @@ import type { InsertToDo } from "../../../actions/ToDo";
 import useAddToDoDialog from "./hooks";
 
 interface AddToDoDialog extends ComponentProps<typeof Dialog> {
-  onSubmit: (data: InsertToDo) => void;
+  onSubmit: (data: InsertToDo) => Promise<void>;
 }
 
 export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
@@ -23,6 +23,7 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
     errors,
     formIsTouched,
     formIsValid,
+    isSubmitting,
     validateTitle,
     validateBody,
     handleFormSubmit,
@@ -65,7 +66,7 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
             <Button
               variant="default"
               type="submit"
-              disabled={!formIsTouched || !formIsValid}
+              disabled={!formIsTouched || !formIsValid || isSubmitting}
             >
               Save changes
             </Button>

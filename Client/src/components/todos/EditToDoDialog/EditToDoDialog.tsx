@@ -16,7 +16,7 @@ import useEditToDoDialog from "./hooks";
 
 interface EditToDoDialog extends ComponentProps<typeof Dialog> {
   defaultValues: ToDo | null;
-  onSubmit: (id: number, data: UpdateToDo) => void;
+  onSubmit: (id: number, data: UpdateToDo) => Promise<void>;
   onArchive: (id: number) => void;
 }
 
@@ -34,6 +34,7 @@ export function EditToDoDialog({
     errors,
     formIsTouched,
     formIsValid,
+    isSubmitting,
     validateTitle,
     validateBody,
     validateCompleted,
@@ -101,7 +102,7 @@ export function EditToDoDialog({
             <Button
               variant="default"
               type="submit"
-              disabled={!formIsTouched || !formIsValid}
+              disabled={!formIsTouched || !formIsValid || isSubmitting}
             >
               Save changes
             </Button>

@@ -4,7 +4,7 @@ import type { InsertToDo } from "../../../actions/ToDo";
 export default function useAddToDoDialog({
   onSubmit,
 }: {
-  onSubmit: (data: InsertToDo) => void;
+  onSubmit: (data: InsertToDo) => Promise<void>;
 }) {
   const [errors, setErrors] = useState<Record<string, boolean>>({
     title: false,
@@ -13,6 +13,7 @@ export default function useAddToDoDialog({
     title: "",
     body: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const formIsTouched = useMemo(() => {
     return currentState.title || currentState.body;
@@ -46,6 +47,7 @@ export default function useAddToDoDialog({
   };
 
   const handleFormSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
     const title = formData.get("todo_title")?.toString().trim();
     const body = formData.get("todo_body")?.toString().trim();
     if (!title) {
@@ -57,7 +59,8 @@ export default function useAddToDoDialog({
       body,
     };
 
-    onSubmit(data);
+    await onSubmit(data);
+    setIsSubmitting(false);
   };
 
   const reset = () => {
@@ -74,6 +77,7 @@ export default function useAddToDoDialog({
     errors,
     formIsTouched,
     formIsValid,
+    isSubmitting,
     validateTitle,
     validateBody,
     handleFormSubmit,

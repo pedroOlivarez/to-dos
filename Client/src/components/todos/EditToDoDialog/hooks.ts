@@ -6,7 +6,7 @@ export default function useEditToDoDialog({
   onSubmit,
 }: {
   defaultValues: ToDo;
-  onSubmit: (id: number, data: UpdateToDo) => void;
+  onSubmit: (id: number, data: UpdateToDo) => Promise<void>;
 }) {
   const [errors, setErrors] = useState<Record<string, boolean>>({
     title: false,
@@ -16,6 +16,7 @@ export default function useEditToDoDialog({
     body: defaultValues.body,
     completed: defaultValues.completed,
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const formIsTouched = useMemo(() => {
     return (
       currentState.title !== defaultValues.title ||
@@ -58,6 +59,7 @@ export default function useEditToDoDialog({
   };
 
   const handleFormSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
     const title = formData.get("todo_title")?.toString().trim();
     const body = formData.get("todo_body")?.toString().trim();
     const completed = Boolean(formData.get("todo_completed")?.toString());
@@ -80,9 +82,13 @@ export default function useEditToDoDialog({
       data.completed = completed;
       updated = true;
     }
-    if (!updated) return;
+    if (!updated) {
+      setIsSubmitting(false);
+      return;
+    }
 
-    onSubmit(defaultValues.id, data);
+    await onSubmit(defaultValues.id, data);
+    setIsSubmitting(false);
   };
 
   const reset = () => {
@@ -96,6 +102,7 @@ export default function useEditToDoDialog({
     errors,
     formIsTouched,
     formIsValid,
+    isSubmitting,
     validateTitle,
     validateBody,
     validateCompleted,
