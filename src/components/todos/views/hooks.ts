@@ -22,12 +22,12 @@ export function useToDosView() {
     new Date().toISOString(),
   );
   const [selectedToDo, setSelectedToDo] = useState<ToDo | null>(null);
-  const { data, isLoading, isError } = useToDos(lastUpdated, []);
+  const { data, isLoading, isError } = useToDos(lastUpdated);
 
   const handleAddToDoButtonClick = () => setModal(TODO_MODALS.ADD);
 
   const handleSelectToDo = (id: number) => {
-    const toDo = data.find((t) => t.id === id);
+    const toDo = data?.find((t) => t.id === id);
     if (toDo) {
       setSelectedToDo(toDo);
       setModal(TODO_MODALS.EDIT);

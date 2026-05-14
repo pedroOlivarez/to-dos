@@ -7,7 +7,7 @@ export function ResultDisplay({
   isError,
   onSelectToDo,
 }: {
-  toDos: ToDoType[];
+  toDos: ToDoType[] | null;
   isLoading: boolean;
   isError: boolean;
   onSelectToDo: (id: number) => void;
