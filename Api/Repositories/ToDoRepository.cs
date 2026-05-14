@@ -21,7 +21,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
             body,
             completed,
             created_at as createdAt,
-            updated_at as updatedAt,
+            updated_at as updatedAt
         FROM {tableName}
         WHERE archived = false
     ";
@@ -65,6 +65,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
         var paginatedSql =
             @$"
         {baseQueryString}
+        ORDER BY completed ASC, title
         LIMIT {request.PageSize}
         OFFSET {request.OffSet}
         ";

@@ -50,7 +50,9 @@ function ResultDisplay({
         <ToDo onClick={onSelectToDo} key={td.id} toDo={td} />
       ))}
     </div>
-  ) : null;
+  ) : (
+    <div>Nothing to show yet</div>
+  );
 }
 type Modal = "ADD_TODO" | "EDIT_TODO";
 
