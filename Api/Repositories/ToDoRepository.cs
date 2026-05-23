@@ -65,7 +65,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
         var paginatedSql =
             @$"
         {baseQueryString}
-        ORDER BY completed ASC, title
+        ORDER BY completed ASC, created_at
         LIMIT {request.PageSize}
         OFFSET {request.OffSet}
         ";
