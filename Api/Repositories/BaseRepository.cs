@@ -17,6 +17,13 @@ public class BaseRepository(IOptions<RepositorySettings> options) : IBaseReposit
             ?? throw new KeyNotFoundException($"Entity with id {id} not found");
     }
 
+    public async Task<T> GetByParams<T>(string Sql, object sqlParams)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryFirstOrDefaultAsync<T?>(Sql, sqlParams)
+            ?? throw new KeyNotFoundException($"Entity not found");
+    }
+
     public async Task<(int Total, IEnumerable<T>)> GetMany<T>(string Sql, string tableName)
     {
         var countQuery =

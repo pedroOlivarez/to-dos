@@ -8,10 +8,6 @@ public class ToDo : BaseEntity
 
     public string? Body { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime UpdatedAt { get; set; }
-
     public required bool Completed { get; set; }
 
     public ToDoModel ToModel()

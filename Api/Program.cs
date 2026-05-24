@@ -1,8 +1,11 @@
 using Api.Contracts;
+using Api.Dtos;
 using Api.Middlewares;
 using Api.Repositories;
 using Api.Services.ToDo;
+using Api.Services.User;
 using Api.Settings;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -14,13 +17,18 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// passwordHasher
+builder.Services.AddScoped<IPasswordHasher<BaseUserDto>, PasswordHasher<BaseUserDto>>();
+
 // repos
 builder.Services.Configure<RepositorySettings>(builder.Configuration.GetSection("Neon"));
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // services
 builder.Services.AddScoped<IToDoService, ToDoService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
