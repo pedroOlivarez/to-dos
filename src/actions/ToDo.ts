@@ -1,57 +1,49 @@
-import { getMany, create, update, archive } from "../http";
-import { adjustedDate } from "../libs/utils/dateHelpers";
+import { get, post, patch, del } from '../http';
+import { adjustedDate } from '../libs/utils/dateHelpers';
 
 type InsertToDo = {
-  title: string;
-  body?: string;
+   title: string;
+   body?: string;
 };
 
 type ToDo = InsertToDo & {
-  id: number;
-  updatedAt: Date;
-  completed: boolean;
+   id: number;
+   updatedAt: Date;
+   completed: boolean;
 };
 
 type UpdateToDo = {
-  title?: string;
-  body?: string;
-  completed?: boolean;
+   title?: string;
+   body?: string;
+   completed?: boolean;
 };
 
 const getToDos = async (): Promise<ToDo[]> => {
-  const response = await getMany<ToDo>();
-  return response.map((r) => ({
-    ...r,
-    updatedAt: adjustedDate(new Date(r.updatedAt)),
-  }));
+   const response = await get<ToDo>();
+   return response.map(r => ({
+      ...r,
+      updatedAt: adjustedDate(new Date(r.updatedAt)),
+   }));
 };
 
 const createToDo = async (toDo: InsertToDo): Promise<ToDo> => {
-  const created = await create<InsertToDo, ToDo>(toDo);
-  return {
-    ...created,
-    updatedAt: adjustedDate(new Date(created.updatedAt)),
-  };
+   const created = await post<InsertToDo, ToDo>(toDo);
+   return {
+      ...created,
+      updatedAt: adjustedDate(new Date(created.updatedAt)),
+   };
 };
 
 const updateToDo = async (id: number, toDo: UpdateToDo): Promise<ToDo> => {
-  const updated = await update<UpdateToDo, ToDo>(id, toDo);
-  return {
-    ...updated,
-    updatedAt: adjustedDate(new Date(updated.updatedAt)),
-  };
+   const updated = await patch<UpdateToDo, ToDo>(id, toDo);
+   return {
+      ...updated,
+      updatedAt: adjustedDate(new Date(updated.updatedAt)),
+   };
 };
 
 const archiveToDo = async (id: number): Promise<void> => {
-  await archive(id);
+   await del(id);
 };
 
-export {
-  getToDos,
-  createToDo,
-  updateToDo,
-  archiveToDo,
-  type InsertToDo,
-  type ToDo,
-  type UpdateToDo,
-};
+export { getToDos, createToDo, updateToDo, archiveToDo, type InsertToDo, type ToDo, type UpdateToDo };
