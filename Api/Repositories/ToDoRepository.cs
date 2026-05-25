@@ -1,7 +1,7 @@
 using Api.Contracts;
 using Api.Dtos;
 using Api.Entities;
-using Api.Models.Requests;
+using Api.Models.Shared.Requests;
 using Api.Settings;
 using Microsoft.Extensions.Options;
 

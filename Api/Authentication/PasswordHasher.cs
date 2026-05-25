@@ -1,10 +1,9 @@
 using System.Security.Cryptography;
-using Api.Dtos;
 using Microsoft.AspNetCore.Identity;
 
 namespace Api.Authentication;
 
-public class PasswordHasher : IPasswordHasher<BaseUserDto>
+public class PasswordHasher : IPasswordHasher
 {
     private readonly int SaltSize = 16;
     private readonly int KeySize = 32;
@@ -12,9 +11,13 @@ public class PasswordHasher : IPasswordHasher<BaseUserDto>
     private static readonly HashAlgorithmName hashAlgorithmName = HashAlgorithmName.SHA256;
     private static readonly char Delimiter = ';';
 
-    public string HashPassword(BaseUserDto user, string password)
+    public string HashPassword(string password)
     {
-        var salt = RandomNumberGenerator.GetBytes(count: SaltSize);
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            throw new ArgumentException("Password cannot be empty or null");
+        }
+        var salt = RandomNumberGenerator.GetBytes(SaltSize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(
             password,
             salt,
@@ -23,11 +26,16 @@ public class PasswordHasher : IPasswordHasher<BaseUserDto>
             KeySize
         );
 
-        return string.Join(Delimiter, Convert.ToBase64String(salt), Convert.ToBase64String(hash));
+        var result = string.Join(
+            Delimiter,
+            Convert.ToBase64String(salt),
+            Convert.ToBase64String(hash)
+        );
+
+        return result;
     }
 
     public PasswordVerificationResult VerifyHashedPassword(
-        BaseUserDto user,
         string hashedPassword,
         string providedPassword
     )

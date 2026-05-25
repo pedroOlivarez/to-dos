@@ -1,4 +1,4 @@
-using Api.Models;
+using Api.Models.User;
 
 namespace Api.Entities;
 

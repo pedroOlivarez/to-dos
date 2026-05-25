@@ -1,10 +1,6 @@
 using Api.Dtos;
-using Api.Models;
-using Api.Models.Requests;
-using Api.Models.Responses;
-using Api.Services.ToDo;
+using Api.Models.User;
 using Api.Services.User;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -26,20 +22,6 @@ public class UsersController(IUserService userService) : ControllerBase
     public async Task<UserModel> Create(UserInsertDto userInsertDto)
     {
         return await _userService.Create(userInsertDto);
-    }
-
-    // extract to auth controller
-    [HttpPost]
-    [Route("authenticate")]
-    public async Task<StatusCodeResult> Authenticate(AuthenticationRequest authenticationRequest)
-    {
-        var result = await _userService.Authenticate(authenticationRequest);
-        if (result == PasswordVerificationResult.Success)
-        {
-            return Ok();
-        }
-
-        return Unauthorized();
     }
 
     [HttpPatch]

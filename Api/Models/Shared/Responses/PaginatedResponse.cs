@@ -1,4 +1,4 @@
-namespace Api.Models.Responses;
+namespace Api.Models.Shared.Responses;
 
 public class Meta
 {

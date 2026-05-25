@@ -1,6 +1,5 @@
 using Api.Dtos;
-using Api.Models;
-using Microsoft.AspNetCore.Identity;
+using Api.Models.User;
 
 namespace Api.Services.User;
 
@@ -13,12 +12,4 @@ public interface IUserService
     Task<UserModel> Update(int id, UserUpdateDto userUpdateDto);
 
     Task Archive(int id);
-
-    // this should go in auth service later
-    Task<PasswordVerificationResult> Authenticate(AuthenticationRequest authenticationRequest);
-}
-
-public class AuthenticationRequest : BaseUserDto
-{
-    public required string Email { get; set; }
 }
