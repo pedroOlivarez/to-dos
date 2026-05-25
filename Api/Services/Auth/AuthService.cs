@@ -22,7 +22,9 @@ public class AuthService(
     private readonly string _jwtSecretKey =
         configuration["Jwt:Secret"] ?? throw new ArgumentNullException(nameof(_jwtSecretKey));
 
-    public async Task<string> Authenticate(AuthenticationRequest authenticationRequest)
+    public async Task<AuthenticationResponse> Authenticate(
+        AuthenticationRequest authenticationRequest
+    )
     {
         try
         {
@@ -33,7 +35,8 @@ public class AuthService(
             );
             if (verificationResult == PasswordVerificationResult.Success)
             {
-                return GetJwt(user);
+                AuthenticationResponse response = new() { Token = GetJwt(user) };
+                return response;
             }
             throw new UnauthorizedAccessException();
         }

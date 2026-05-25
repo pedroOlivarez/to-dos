@@ -1,6 +1,5 @@
 using Api.Models.Auth;
 using Api.Services.Auth;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -13,7 +12,9 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     [HttpPost]
     [Route("authenticate")]
-    public async Task<string> Authenticate(AuthenticationRequest authenticationRequest)
+    public async Task<AuthenticationResponse> Authenticate(
+        AuthenticationRequest authenticationRequest
+    )
     {
         return await _authService.Authenticate(authenticationRequest);
     }

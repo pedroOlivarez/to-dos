@@ -6,5 +6,5 @@ namespace Api.Services.Auth;
 
 public interface IAuthService
 {
-    Task<string> Authenticate(AuthenticationRequest authenticationRequest);
+    Task<AuthenticationResponse> Authenticate(AuthenticationRequest authenticationRequest);
 }
