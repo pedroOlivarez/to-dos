@@ -3,12 +3,14 @@ using Api.Models.Shared.Requests;
 using Api.Models.Shared.Responses;
 using Api.Models.ToDo;
 using Api.Services.ToDo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class ToDosController(IToDoService toDoService) : ControllerBase
 {
     private readonly IToDoService _toDoService = toDoService;

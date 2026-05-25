@@ -1,3 +1,4 @@
+using System.Text;
 using Api.Authentication;
 using Api.Contracts;
 using Api.Middlewares;
@@ -6,6 +7,8 @@ using Api.Services.Auth;
 using Api.Services.ToDo;
 using Api.Services.User;
 using Api.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -28,6 +31,27 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
+
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        var secret =
+            builder.Configuration["Jwt:Secret"] ?? throw new ArgumentNullException("Jwt:Secret");
+        var issuer =
+            builder.Configuration["Jwt:Issuer"] ?? throw new ArgumentNullException("Jwt:Issuer");
+        var audience =
+            builder.Configuration["Jwt:Audience"]
+            ?? throw new ArgumentNullException("Jwt:Audience");
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -59,6 +83,7 @@ else
 }
 
 app.UseCors(MyAllowSpecificOrigins);
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<SystemMiddleware>();
 app.MapControllers();
