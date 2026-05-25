@@ -17,7 +17,6 @@ public class UserRepository(IOptions<RepositorySettings> options)
         SELECT
             id,
             email,
-            password,
             created_at as createdAt,
             updated_at as updatedAt
         FROM {tableName}
@@ -35,19 +34,14 @@ public class UserRepository(IOptions<RepositorySettings> options)
         var insertSql =
             @$"
             INSERT INTO {tableName}
-            (email, password, created_at, updated_at)
-            VALUES(@email, @password, @now, @now)
+            (email, created_at, updated_at)
+            VALUES(@email, @now, @now)
             RETURNING id;
         ";
 
         var createdId = await Create(
             insertSql,
-            new
-            {
-                email = userInsertDto.Email,
-                password = userInsertDto.Password,
-                now = DateTime.UtcNow,
-            }
+            new { email = userInsertDto.Email, now = DateTime.UtcNow }
         );
 
         return await GetById<User>(queryOneString, createdId);
@@ -70,18 +64,9 @@ public class UserRepository(IOptions<RepositorySettings> options)
 
     public async Task Update(int id, UserUpdateDto userUpdateDto)
     {
-        List<string> updatedValues = ["password = @password", "updated_at = @now"];
+        List<string> updatedValues = ["updated_at = @now"];
 
-        await Update(
-            tableName,
-            updatedValues,
-            new
-            {
-                id,
-                password = userUpdateDto.Password,
-                now = DateTime.UtcNow,
-            }
-        );
+        await Update(tableName, updatedValues, new { id, now = DateTime.UtcNow });
     }
 
     public async Task Archive(int id)

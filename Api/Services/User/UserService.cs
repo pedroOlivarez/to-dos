@@ -1,14 +1,11 @@
-using Api.Authentication;
 using Api.Contracts;
 using Api.Dtos;
 using Api.Models.User;
 
 namespace Api.Services.User;
 
-public class UserService(IPasswordHasher passwordHasher, IUserRepository userRepository)
-    : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-    private readonly IPasswordHasher _passwordHasher = passwordHasher;
     private readonly IUserRepository _userRepository = userRepository;
 
     public Task Archive(int id)
@@ -18,13 +15,6 @@ public class UserService(IPasswordHasher passwordHasher, IUserRepository userRep
 
     public async Task<UserModel> Create(UserInsertDto userInsertDto)
     {
-        // verification on email format
-        // verification on email uniqueness
-        // verification on password length
-        var hashedPassword = _passwordHasher.HashPassword(userInsertDto.Password);
-
-        userInsertDto.Password = hashedPassword;
-
         var user = await _userRepository.Create(userInsertDto);
 
         return user.ToModel();

@@ -7,5 +7,4 @@ public class UserUpdateDto : BaseUserDto { }
 public abstract class BaseUserDto
 {
     public required string Email { get; set; }
-    public required string Password { get; set; }
 }
