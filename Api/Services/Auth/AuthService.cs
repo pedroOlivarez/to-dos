@@ -26,7 +26,7 @@ public class AuthService(IPasswordHasher passwordHasher, IUserRepository userRep
         }
         catch
         {
-            // don't want to return 404 here. Security concern. Just do 401 or 403 whichever one is bad auth
+            // don't want to return 404 here. Security concern. Just do 401
             return PasswordVerificationResult.Failed;
         }
     }
