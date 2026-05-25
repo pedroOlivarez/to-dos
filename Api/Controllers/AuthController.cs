@@ -13,14 +13,8 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     [HttpPost]
     [Route("authenticate")]
-    public async Task<StatusCodeResult> Authenticate(AuthenticationRequest authenticationRequest)
+    public async Task<string> Authenticate(AuthenticationRequest authenticationRequest)
     {
-        var result = await _authService.Authenticate(authenticationRequest);
-        if (result == PasswordVerificationResult.Success)
-        {
-            return Ok();
-        }
-
-        return Unauthorized();
+        return await _authService.Authenticate(authenticationRequest);
     }
 }

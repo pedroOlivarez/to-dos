@@ -15,6 +15,19 @@ public class SystemMiddleware(RequestDelegate next)
             );
             await next(context);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Title = "Unauthorized",
+                Status = StatusCodes.Status401Unauthorized,
+                Instance = context.Request.Path,
+                Detail = ex.Message,
+            };
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
         catch (KeyNotFoundException ex)
         {
             var problemDetails = new ProblemDetails
@@ -30,7 +43,6 @@ public class SystemMiddleware(RequestDelegate next)
         }
         catch (Exception ex)
         {
-            // we would log stuff here; for now just console log it
             Console.WriteLine(ex.Message);
             var problemDetails = new ProblemDetails
             {
