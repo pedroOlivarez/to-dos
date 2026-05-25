@@ -2,13 +2,11 @@ using Api.Contracts;
 using Api.Dtos;
 using Api.Entities;
 using Api.Models.Shared.Requests;
-using Api.Settings;
-using Microsoft.Extensions.Options;
 
 namespace Api.Repositories;
 
-public class ToDoRepository(IOptions<RepositorySettings> options)
-    : BaseRepository(options),
+public class ToDoRepository(IConfiguration configuration)
+    : BaseRepository(configuration),
         IToDoRepository
 {
     private static readonly string tableName = "public.to_dos";

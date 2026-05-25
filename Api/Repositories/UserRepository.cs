@@ -1,13 +1,11 @@
 using Api.Contracts;
 using Api.Dtos;
 using Api.Entities;
-using Api.Settings;
-using Microsoft.Extensions.Options;
 
 namespace Api.Repositories;
 
-public class UserRepository(IOptions<RepositorySettings> options)
-    : BaseRepository(options),
+public class UserRepository(IConfiguration configuration)
+    : BaseRepository(configuration),
         IUserRepository
 {
     private static readonly string tableName = "public.users";

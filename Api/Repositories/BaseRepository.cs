@@ -1,14 +1,14 @@
 using Api.Contracts;
-using Api.Settings;
 using Dapper;
-using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace Api.Repositories;
 
-public class BaseRepository(IOptions<RepositorySettings> options) : IBaseRepository
+public class BaseRepository(IConfiguration configuration) : IBaseRepository
 {
-    private readonly string _connectionString = options.Value.ConnectionString;
+    private readonly string _connectionString =
+        configuration["ConnectionStrings:Neon"]
+        ?? throw new ArgumentNullException(nameof(_connectionString));
 
     public async Task<T> GetById<T>(string Sql, int id)
     {

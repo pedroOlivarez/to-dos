@@ -6,7 +6,6 @@ using Api.Repositories;
 using Api.Services.Auth;
 using Api.Services.ToDo;
 using Api.Services.User;
-using Api.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -21,7 +20,6 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // repos
-builder.Services.Configure<RepositorySettings>(builder.Configuration.GetSection("Neon"));
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
