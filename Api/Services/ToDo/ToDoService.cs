@@ -1,8 +1,8 @@
 using Api.Contracts;
 using Api.Dtos;
-using Api.Models;
-using Api.Models.Requests;
-using Api.Models.Responses;
+using Api.Models.Shared.Requests;
+using Api.Models.Shared.Responses;
+using Api.Models.ToDo;
 
 namespace Api.Services.ToDo;
 

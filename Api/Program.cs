@@ -1,7 +1,10 @@
+using Api.Authentication;
 using Api.Contracts;
 using Api.Middlewares;
 using Api.Repositories;
+using Api.Services.Auth;
 using Api.Services.ToDo;
+using Api.Services.User;
 using Api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,9 +20,14 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<RepositorySettings>(builder.Configuration.GetSection("Neon"));
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // services
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
