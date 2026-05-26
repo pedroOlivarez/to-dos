@@ -4,9 +4,10 @@ import {
   type AuthenticationRequest,
 } from "../../actions/Authenticate";
 import { containsNumber, isValidEmail } from "../../libs/utils/stringUtils";
-import { redirect } from "react-router";
+import { useNavigate } from "react-router";
 
 export function useLogin() {
+  const navigate = useNavigate();
   const [currentState, setCurrentState] = useState<AuthenticationRequest>({
     email: "",
     password: "",
@@ -98,7 +99,13 @@ export function useLogin() {
 
     resetFormState();
     if (response) {
+      navigate("/");
     } else {
+      resetFormState();
+      setErrors({
+        email: "Invalid email or password",
+        password: "Invalid email or password",
+      });
     }
   };
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { UNAUTHENTICATED_USER } from "../libs/utils/consts";
 
 type UseQueryArgs<T> = {
   queryKey: string;
@@ -9,6 +10,7 @@ function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isUnauthenticated, setIsUnAuthenticated] = useState(false);
 
   useEffect(() => {
     let didCancel = false;
@@ -20,6 +22,12 @@ function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
         const result = await queryFn();
         if (!didCancel) setData(result);
       } catch (error) {
+        const knownError = error as Error;
+        if (knownError.message === UNAUTHENTICATED_USER) {
+          setIsUnAuthenticated(true);
+        } else {
+          setIsUnAuthenticated(false);
+        }
         if (!didCancel) setIsError(true);
       }
 
@@ -33,7 +41,7 @@ function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
     };
   }, [queryKey]);
 
-  return { data, isLoading, isError };
+  return { data, isLoading, isError, isUnauthenticated };
 }
 
 export { useQuery, type UseQueryArgs };

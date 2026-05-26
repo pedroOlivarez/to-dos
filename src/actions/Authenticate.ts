@@ -10,13 +10,12 @@ const route = "auth";
 const authenticate = async (
   authRequest: AuthenticationRequest,
 ): Promise<boolean> => {
-  const response = await post<AuthenticationRequest, string>(
+  const response = await post<AuthenticationRequest>(
     `${route}/authenticate`,
     authRequest,
-    false,
   );
 
-  return response === "true";
+  return response.success;
 };
 
 export { authenticate, type AuthenticationRequest };

@@ -8,8 +8,8 @@ function App() {
     <section className="flex h-full flex-col bg-gray-500">
       <Layout>
         <Routes>
-          <Route path="/to-dos" element={<ToDos />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<ToDos />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Layout>
     </section>

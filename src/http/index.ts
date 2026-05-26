@@ -3,10 +3,24 @@ const url = `${import.meta.env["VITE_API_URL"]}`;
 const headers = {
   "Content-Type": "application/json",
 };
-
 const credentials = "include";
 
-async function get<T>(route: string): Promise<T[]> {
+type BaseResponse = {
+  statusCode: number;
+  success: boolean;
+};
+
+type Response<T> =
+  | (BaseResponse & {
+      success: true;
+      data: T;
+    })
+  | (BaseResponse & {
+      success: false;
+      error: string;
+    });
+
+async function get<T>(route: string): Promise<Response<T[]>> {
   try {
     const response = await fetch(`${url}/${route}`, {
       headers,
@@ -15,39 +29,66 @@ async function get<T>(route: string): Promise<T[]> {
 
     if (response.ok) {
       const responseBody = await response.json();
-      return responseBody.data as T[];
-    } else {
-      return Promise.reject();
+      return {
+        statusCode: response.status,
+        success: true,
+        data: responseBody.data as T[],
+      };
     }
+    return {
+      statusCode: response.status,
+      success: false,
+      error: "Error fetching data",
+    };
   } catch (err) {
     console.error(err);
     throw new Error("Error fetching data", { cause: err });
   }
 }
 
-async function post<Dto, T>(
-  route: string,
-  insert: Dto,
-  returnsObj = true,
-): Promise<T> {
+async function post<Dto>(route: string, body: Dto): Promise<BaseResponse> {
   try {
     const response = await fetch(`${url}/${route}`, {
       method: "post",
       headers,
       credentials,
-      body: JSON.stringify(insert),
+      body: JSON.stringify(body),
+    });
+    return {
+      statusCode: response.status,
+      success: response.ok,
+    };
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error creating entity", { cause: err });
+  }
+}
+
+async function postWithResult<Dto, T>(
+  route: string,
+  body: Dto,
+): Promise<Response<T>> {
+  try {
+    const response = await fetch(`${url}/${route}`, {
+      method: "post",
+      headers,
+      credentials,
+      body: JSON.stringify(body),
     });
 
     if (response.ok) {
-      if (returnsObj) {
-        const model: T = await response.json();
-        return model;
-      } else {
-        const body: T = (await response.text()) as T;
-        return body;
-      }
+      const data: T = await response.json();
+      return {
+        statusCode: response.status,
+        success: true,
+        data,
+      };
     } else {
-      return Promise.reject();
+      return {
+        statusCode: response.status,
+        success: false,
+        error: "Error fetching data",
+      };
     }
   } catch (err) {
     console.error(err);
@@ -59,8 +100,7 @@ async function patch<Dto, T>(
   route: string,
   id: number,
   update: Dto,
-  returnsObj = true,
-): Promise<T> {
+): Promise<Response<T>> {
   try {
     const response = await fetch(`${url}/${route}/${id}`, {
       method: "patch",
@@ -70,12 +110,18 @@ async function patch<Dto, T>(
     });
 
     if (response.ok) {
-      if (returnsObj) {
-        const model: T = await response.json();
-        return model;
-      } else return response.body as T;
+      const data: T = await response.json();
+      return {
+        statusCode: response.status,
+        success: true,
+        data,
+      };
     } else {
-      return Promise.reject();
+      return {
+        statusCode: response.status,
+        success: false,
+        error: "Error fetching data",
+      };
     }
   } catch (err) {
     console.error(err);
@@ -83,22 +129,22 @@ async function patch<Dto, T>(
   }
 }
 
-async function del(route: string, id: number): Promise<void> {
+async function del(route: string, id: number): Promise<BaseResponse> {
   try {
     const response = await fetch(`${url}/${route}/${id}`, {
       method: "delete",
       credentials,
     });
 
-    if (response.ok) {
-      return Promise.resolve();
-    } else {
-      return Promise.reject();
-    }
+    console.log(response);
+    return {
+      statusCode: response.status,
+      success: response.ok,
+    };
   } catch (err) {
     console.error(err);
     throw new Error("Error updating entity", { cause: err });
   }
 }
 
-export { post, get, patch, del };
+export { del, get, post, postWithResult, patch, type Response };

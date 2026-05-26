@@ -1,5 +1,6 @@
-import { get, post, patch, del } from "../http";
+import { get, patch, del, postWithResult } from "../http";
 import { adjustedDate } from "../libs/utils/dateHelpers";
+import { UNAUTHENTICATED_USER } from "../libs/utils/consts";
 
 type InsertToDo = {
   title: string;
@@ -22,37 +23,61 @@ const route = "toDos";
 
 const getToDos = async (): Promise<ToDo[]> => {
   const response = await get<ToDo>(route);
-  return response.map((r) => ({
+  if (!response.success) {
+    if (response.statusCode === 401) {
+      throw new Error(UNAUTHENTICATED_USER);
+    }
+    throw new Error(response.error);
+  }
+  return response.data.map((r) => ({
     ...r,
     updatedAt: adjustedDate(new Date(r.updatedAt)),
   }));
 };
 
 const createToDo = async (toDo: InsertToDo): Promise<ToDo> => {
-  const created = await post<InsertToDo, ToDo>(route, toDo);
+  const response = await postWithResult<InsertToDo, ToDo>(route, toDo);
+  if (!response.success) {
+    if (response.statusCode === 401) {
+      throw new Error(UNAUTHENTICATED_USER);
+    }
+    throw new Error(response.error);
+  }
   return {
-    ...created,
-    updatedAt: adjustedDate(new Date(created.updatedAt)),
+    ...response.data,
+    updatedAt: adjustedDate(new Date(response.data.updatedAt)),
   };
 };
 
 const updateToDo = async (id: number, toDo: UpdateToDo): Promise<ToDo> => {
-  const updated = await patch<UpdateToDo, ToDo>(route, id, toDo);
+  const response = await patch<UpdateToDo, ToDo>(route, id, toDo);
+  if (!response.success) {
+    if (response.statusCode === 401) {
+      throw new Error(UNAUTHENTICATED_USER);
+    }
+    throw new Error(response.error);
+  }
   return {
-    ...updated,
-    updatedAt: adjustedDate(new Date(updated.updatedAt)),
+    ...response.data,
+    updatedAt: adjustedDate(new Date(response.data.updatedAt)),
   };
 };
 
 const archiveToDo = async (id: number): Promise<void> => {
-  await del(route, id);
+  const response = await del(route, id);
+  if (!response.success) {
+    if (response.statusCode === 401) {
+      throw new Error(UNAUTHENTICATED_USER);
+    }
+    throw new Error("Error archiving To-Do");
+  }
 };
 
 export {
-  getToDos,
-  createToDo,
-  updateToDo,
   archiveToDo,
+  createToDo,
+  getToDos,
+  updateToDo,
   type InsertToDo,
   type ToDo,
   type UpdateToDo,
