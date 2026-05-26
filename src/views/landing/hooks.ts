@@ -3,6 +3,7 @@ import {
   authenticate,
   type AuthenticationRequest,
 } from "../../actions/Authenticate";
+import { containsNumber, isValidEmail } from "../../libs/utils/stringUtils";
 
 export function useLogin() {
   const [currentState, setCurrentState] = useState<AuthenticationRequest>({
@@ -27,27 +28,34 @@ export function useLogin() {
 
   const validateEmail = (e: FocusEvent<HTMLInputElement, Element>) => {
     const email = e.currentTarget.value.trim();
-    setCurrentState((prev) => ({
-      ...prev,
-      email,
-    }));
+    const isValid = !!email && isValidEmail(email);
+    if (isValid) {
+      setCurrentState((prev) => ({
+        ...prev,
+        email,
+      }));
+    }
     setErrors((prev) => ({
       ...prev,
-      email: !email,
+      email: !isValid,
     }));
   };
 
   const validatePassword = (e: FocusEvent<HTMLInputElement, Element>) => {
-    const password = e.currentTarget.value.trim();
-    setCurrentState((prev) => ({
-      ...prev,
-      password,
-    }));
+    const password = e.currentTarget.value;
+    const isValid = password.length >= 8 && containsNumber(password);
+    if (isValid) {
+      setCurrentState((prev) => ({
+        ...prev,
+        password,
+      }));
+    }
     setErrors((prev) => ({
       ...prev,
-      password: !password,
+      password: !isValid,
     }));
   };
+
   const handleFormSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
     const email = formData.get("user_email")?.toString().trim();

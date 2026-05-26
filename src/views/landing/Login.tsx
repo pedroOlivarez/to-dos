@@ -4,6 +4,7 @@ import { Label } from "../../components/ui/Label";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useLogin } from "./hooks";
+import { cn } from "../../libs/utils/classNames";
 
 export function Login(props: ComponentProps<"div">) {
   const {
@@ -16,8 +17,13 @@ export function Login(props: ComponentProps<"div">) {
     handleFormSubmit,
   } = useLogin();
   return (
-    <div className={props.className}>
-      <form action={handleFormSubmit}>
+    <div
+      className={cn(
+        "flex flex-col h-full sm:w-1/5 w-3/4 justify-center items-center",
+        props.className,
+      )}
+    >
+      <form className="flex flex-col w-full gap-4" action={handleFormSubmit}>
         <FieldGroup>
           <Field>
             <Label htmlFor="email">Email</Label>

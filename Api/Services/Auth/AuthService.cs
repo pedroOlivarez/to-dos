@@ -21,9 +21,13 @@ public class AuthService(
 
     private readonly string _jwtSecretKey =
         configuration["Jwt:Secret"] ?? throw new ArgumentNullException(nameof(_jwtSecretKey));
+    private readonly int _jwtExpiry =
+        configuration.GetValue<int?>("Jwt:ExpirationInMinutes")
+        ?? throw new ArgumentNullException(nameof(_jwtExpiry));
 
-    public async Task<AuthenticationResponse> Authenticate(
-        AuthenticationRequest authenticationRequest
+    public async Task<bool> Authenticate(
+        AuthenticationRequest authenticationRequest,
+        HttpContext context
     )
     {
         try
@@ -35,16 +39,46 @@ public class AuthService(
             );
             if (verificationResult == PasswordVerificationResult.Success)
             {
-                AuthenticationResponse response = new() { Token = GetJwt(user) };
-                return response;
+                SetToken(GetJwt(user), context);
+                return true;
+                // AuthenticationResponse response = new() { Token = GetJwt(user) };
             }
-            throw new UnauthorizedAccessException();
+            return false;
         }
         // suppress 404 on email not found to not expose that information
         catch (KeyNotFoundException)
         {
-            throw new UnauthorizedAccessException();
+            return false;
         }
+    }
+
+    public void SetToken(string token, HttpContext context)
+    {
+        context.Response.Cookies.Append(
+            "accessToken",
+            token,
+            new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtExpiry),
+                HttpOnly = true,
+                IsEssential = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+            }
+        );
+
+        // context.Response.Cookies.Append(
+        //     "refreshToken",
+        //     token,
+        //     new CookieOptions
+        //     {
+        //         Expires = DateTimeOffset.UtcNow.AddDays(1),
+        //         HttpOnly = true,
+        //         IsEssential = true,
+        //         Secure = true,
+        //         SameSite = SameSiteMode.None,
+        //     }
+        // );
     }
 
     private string GetJwt(Entities.User user)

@@ -6,5 +6,7 @@ namespace Api.Services.Auth;
 
 public interface IAuthService
 {
-    Task<AuthenticationResponse> Authenticate(AuthenticationRequest authenticationRequest);
+    Task<bool> Authenticate(AuthenticationRequest authenticationRequest, HttpContext context);
+
+    void SetToken(string Token, HttpContext context);
 }

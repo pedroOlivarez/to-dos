@@ -1,11 +1,13 @@
 const url = `${import.meta.env["VITE_API_URL"]}`;
 
+const headers = {
+  "Content-Type": "application/json",
+};
+
 async function get<T>(route: string): Promise<T[]> {
   try {
     const response = await fetch(`${url}/${route}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
     });
 
     if (response.ok) {
@@ -20,19 +22,23 @@ async function get<T>(route: string): Promise<T[]> {
   }
 }
 
-async function post<Dto, T>(route: string, insert: Dto): Promise<T> {
+async function post<Dto, T>(
+  route: string,
+  insert: Dto,
+  returnsObj = true,
+): Promise<T> {
   try {
     const response = await fetch(`${url}/${route}`, {
       method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(insert),
     });
 
     if (response.ok) {
-      const model: T = await response.json();
-      return model;
+      if (returnsObj) {
+        const model: T = await response.json();
+        return model;
+      } else return response.body as T;
     } else {
       return Promise.reject();
     }
@@ -46,19 +52,20 @@ async function patch<Dto, T>(
   route: string,
   id: number,
   update: Dto,
+  returnsObj = true,
 ): Promise<T> {
   try {
     const response = await fetch(`${url}/${route}/${id}`, {
       method: "patch",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(update),
     });
 
     if (response.ok) {
-      const model: T = await response.json();
-      return model;
+      if (returnsObj) {
+        const model: T = await response.json();
+        return model;
+      } else return response.body as T;
     } else {
       return Promise.reject();
     }

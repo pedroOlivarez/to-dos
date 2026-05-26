@@ -44,10 +44,30 @@ builder
         o.RequireHttpsMetadata = false;
         o.TokenValidationParameters = new TokenValidationParameters
         {
+            // is this redundant?
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
             ValidIssuer = issuer,
             ValidAudience = audience,
             ClockSkew = TimeSpan.Zero,
+        };
+
+        o.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = ctx =>
+            {
+                ctx.Request.Cookies.TryGetValue("accessToken", out var accessToken);
+                if (!string.IsNullOrWhiteSpace(accessToken))
+                {
+                    ctx.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            },
         };
     });
 
