@@ -79,7 +79,11 @@ builder.Services.AddCors(options =>
         {
             if (builder.Environment.IsDevelopment())
             {
-                policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+                policy
+                    .WithOrigins("http://localhost:5173")
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
             }
             else
             {

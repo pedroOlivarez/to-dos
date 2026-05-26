@@ -5,19 +5,18 @@ type AuthenticationRequest = {
   password: string;
 };
 
-type AuthenticationResponse = {
-  token: string;
-};
-
 const route = "auth";
 
 const authenticate = async (
   authRequest: AuthenticationRequest,
-): Promise<AuthenticationResponse> => {
-  return await post<AuthenticationRequest, AuthenticationResponse>(
+): Promise<boolean> => {
+  const response = await post<AuthenticationRequest, string>(
     `${route}/authenticate`,
     authRequest,
+    false,
   );
+
+  return response === "true";
 };
 
 export { authenticate, type AuthenticationRequest };

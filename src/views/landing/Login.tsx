@@ -16,6 +16,7 @@ export function Login(props: ComponentProps<"div">) {
     validatePassword,
     handleFormSubmit,
   } = useLogin();
+
   return (
     <div
       className={cn(
@@ -32,8 +33,9 @@ export function Login(props: ComponentProps<"div">) {
               name="user_email"
               onBlur={validateEmail}
               className={errors.email ? "border border-red-400" : ""}
-              placeholder={errors.email ? "Email is required" : undefined}
+              placeholder="email"
             />
+            {errors.email && <p>{errors.email}</p>}
           </Field>
           <Field>
             <Label htmlFor="password">Password</Label>
@@ -43,8 +45,9 @@ export function Login(props: ComponentProps<"div">) {
               type="password"
               onBlur={validatePassword}
               className={errors.password ? "border border-red-400" : ""}
-              placeholder={errors.password ? "Password is required" : undefined}
+              placeholder="password"
             />
+            {errors.password && <p>{errors.password}</p>}
           </Field>
         </FieldGroup>
         <Button

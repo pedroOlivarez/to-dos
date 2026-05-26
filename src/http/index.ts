@@ -4,10 +4,13 @@ const headers = {
   "Content-Type": "application/json",
 };
 
+const credentials = "include";
+
 async function get<T>(route: string): Promise<T[]> {
   try {
     const response = await fetch(`${url}/${route}`, {
       headers,
+      credentials,
     });
 
     if (response.ok) {
@@ -31,6 +34,7 @@ async function post<Dto, T>(
     const response = await fetch(`${url}/${route}`, {
       method: "post",
       headers,
+      credentials,
       body: JSON.stringify(insert),
     });
 
@@ -38,7 +42,10 @@ async function post<Dto, T>(
       if (returnsObj) {
         const model: T = await response.json();
         return model;
-      } else return response.body as T;
+      } else {
+        const body: T = (await response.text()) as T;
+        return body;
+      }
     } else {
       return Promise.reject();
     }
@@ -58,6 +65,7 @@ async function patch<Dto, T>(
     const response = await fetch(`${url}/${route}/${id}`, {
       method: "patch",
       headers,
+      credentials,
       body: JSON.stringify(update),
     });
 
@@ -79,6 +87,7 @@ async function del(route: string, id: number): Promise<void> {
   try {
     const response = await fetch(`${url}/${route}/${id}`, {
       method: "delete",
+      credentials,
     });
 
     if (response.ok) {

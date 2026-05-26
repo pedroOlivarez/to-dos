@@ -1,6 +1,6 @@
 using Api.Models.Auth;
 using Api.Services.Auth;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -13,13 +13,21 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     [HttpPost]
     [Route("authenticate")]
-    public async Task<StatusCodeResult> Authenticate(AuthenticationRequest authenticationRequest)
+    public async Task<bool> Authenticate(AuthenticationRequest authenticationRequest)
     {
-        var success = await _authService.Authenticate(authenticationRequest, HttpContext);
-        if (success)
-        {
-            return Ok();
-        }
-        return Unauthorized();
+        return await _authService.Authenticate(authenticationRequest, HttpContext);
+    }
+
+    [HttpPost]
+    [Route("refresh")]
+    [Authorize]
+    public async Task<StatusCodeResult> Refresh()
+    {
+        // implement
+
+        // HttpContext.Request.Cookies.TryGetValue("accessToken", out var accessToken);
+        // HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
+        // await _authService.RefreshToken(accessToken, HttpContext);
+        return Ok();
     }
 }
