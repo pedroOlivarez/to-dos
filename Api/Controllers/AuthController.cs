@@ -28,20 +28,4 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         return Ok();
     }
-
-    [HttpPost]
-    [Route("refresh")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<StatusCodeResult> Refresh()
-    {
-        HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
-        if (string.IsNullOrWhiteSpace(refreshToken))
-            return BadRequest();
-        var success = await _authService.RefreshToken(refreshToken, HttpContext);
-        if (!success)
-            return Unauthorized();
-        return Ok();
-    }
 }

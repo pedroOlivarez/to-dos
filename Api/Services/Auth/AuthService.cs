@@ -63,41 +63,6 @@ public class AuthService(
         }
     }
 
-    public async Task<bool> RefreshToken(string refreshToken, HttpContext context)
-    {
-        // this could be cool to do in middle wares and then we just have it.
-        var userIdStr = context
-            .User.Claims.FirstOrDefault(c => c.Type.EndsWith("nameidentifier"))
-            ?.Value;
-
-        if (string.IsNullOrWhiteSpace(userIdStr))
-            return false;
-
-        if (int.TryParse(userIdStr, out int userId))
-        {
-            var user = await _userRepository.GetById(userId);
-            if (user is null || user.RefreshToken is null)
-            {
-                return false;
-            }
-            if (user.RefreshToken.Equals(refreshToken))
-            {
-                SetAccessToken(GetJwt(user), context);
-                var newRefreshToken = GetRefreshToken();
-                var expiresAt = DateTime.UtcNow.AddDays(1);
-                UserUpdateDto userUpdateDto = new()
-                {
-                    RefreshToken = newRefreshToken,
-                    RefreshTokenExpiresAt = expiresAt,
-                };
-                await _userRepository.Update(user.Id, userUpdateDto);
-                SetRefreshToken(newRefreshToken, expiresAt, context);
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void SetAccessToken(string token, HttpContext context)
     {
         context.Response.Cookies.Append(
