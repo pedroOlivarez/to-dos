@@ -3,16 +3,17 @@ import { useNavigate } from "react-router";
 import { useAuth } from "./hooks";
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth();
-
   const navigate = useNavigate();
 
+  const { isAuthenticated } = useAuth();
+
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated === false) {
       navigate("/login");
     }
   }, [isAuthenticated]);
 
+  // null is falsey. This handles not rendering anything before auth result comes back
   if (!isAuthenticated) {
     return null;
   }
