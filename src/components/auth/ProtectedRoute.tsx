@@ -14,7 +14,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated]);
 
-  // null is falsey. This handles not rendering anything before auth result comes back
+  // null remains falsey. This handles not rendering anything before auth result comes back
   if (!isAuthenticated) {
     return null;
   }
