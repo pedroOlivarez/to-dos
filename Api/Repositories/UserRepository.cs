@@ -16,6 +16,8 @@ public class UserRepository(IConfiguration configuration)
             id,
             email,
             password,
+            refresh_token,
+            refresh_token_expires_at,
             created_at as createdAt,
             updated_at as updatedAt
         FROM {tableName}
@@ -68,7 +70,21 @@ public class UserRepository(IConfiguration configuration)
 
     public async Task Update(int id, UserUpdateDto userUpdateDto)
     {
-        List<string> updatedValues = ["password = @password", "updated_at = @now"];
+        List<string> updatedValues = ["updated_at = @now"];
+
+        if (userUpdateDto.Password is not null)
+        {
+            updatedValues.Add("password = @password");
+        }
+        if (userUpdateDto.RefreshToken is not null)
+        {
+            updatedValues.Add(
+                $"refresh_token = {(!string.IsNullOrWhiteSpace(userUpdateDto.RefreshToken) ? "@refreshToken" : "null")}"
+            );
+            updatedValues.Add(
+                $"refresh_token_expires_at = {(userUpdateDto.RefreshTokenExpiresAt.HasValue ? "@refreshTokenExpiresAt" : "null")}"
+            );
+        }
 
         await Update(
             tableName,
@@ -78,10 +94,13 @@ public class UserRepository(IConfiguration configuration)
                 id,
                 password = userUpdateDto.Password,
                 now = DateTime.UtcNow,
+                refreshToken = userUpdateDto.RefreshToken,
+                refreshTokenExpiresAt = userUpdateDto.RefreshTokenExpiresAt,
             }
         );
     }
 
+    // not currently in use
     public async Task Archive(int id)
     {
         await Archive(tableName, id);

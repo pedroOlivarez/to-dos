@@ -44,7 +44,7 @@ builder
         o.RequireHttpsMetadata = false;
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            // is this redundant?
+            // is this redundant? Are these the default values?
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,

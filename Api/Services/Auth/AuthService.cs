@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Api.Authentication;
 using Api.Contracts;
+using Api.Dtos;
 using Api.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -39,9 +41,17 @@ public class AuthService(
             );
             if (verificationResult == PasswordVerificationResult.Success)
             {
-                SetToken(GetJwt(user), context);
+                SetAccessToken(GetJwt(user), context);
+                var refreshToken = GetRefreshToken();
+                var expiresAt = DateTime.UtcNow.AddDays(1);
+                UserUpdateDto userUpdateDto = new()
+                {
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiresAt = expiresAt,
+                };
+                await _userRepository.Update(user.Id, userUpdateDto);
+                SetRefreshToken(refreshToken, expiresAt, context);
                 return true;
-                // AuthenticationResponse response = new() { Token = GetJwt(user) };
             }
             return false;
         }
@@ -52,7 +62,7 @@ public class AuthService(
         }
     }
 
-    public void SetToken(string token, HttpContext context)
+    private void SetAccessToken(string token, HttpContext context)
     {
         context.Response.Cookies.Append(
             "accessToken",
@@ -66,19 +76,22 @@ public class AuthService(
                 SameSite = SameSiteMode.None,
             }
         );
+    }
 
-        // context.Response.Cookies.Append(
-        //     "refreshToken",
-        //     token,
-        //     new CookieOptions
-        //     {
-        //         Expires = DateTimeOffset.UtcNow.AddDays(1),
-        //         HttpOnly = true,
-        //         IsEssential = true,
-        //         Secure = true,
-        //         SameSite = SameSiteMode.None,
-        //     }
-        // );
+    private static void SetRefreshToken(string token, DateTime expires, HttpContext context)
+    {
+        context.Response.Cookies.Append(
+            "refreshToken",
+            token,
+            new CookieOptions
+            {
+                Expires = expires,
+                HttpOnly = true,
+                IsEssential = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+            }
+        );
     }
 
     private string GetJwt(Entities.User user)
@@ -103,5 +116,10 @@ public class AuthService(
         var handler = new JsonWebTokenHandler();
 
         return handler.CreateToken(tokenDescriptor);
+    }
+
+    private static string GetRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
     }
 }

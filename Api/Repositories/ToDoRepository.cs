@@ -72,7 +72,7 @@ public class ToDoRepository(IConfiguration configuration)
 
     public async Task Update(int id, ToDoUpdateDto toDoUpdateDto)
     {
-        List<string> updatedValues = [];
+        List<string> updatedValues = ["updated_at = @now"];
 
         if (toDoUpdateDto.Title is not null)
         {
@@ -80,13 +80,14 @@ public class ToDoRepository(IConfiguration configuration)
         }
         if (toDoUpdateDto.Body is not null)
         {
-            updatedValues.Add("body = @body");
+            updatedValues.Add(
+                $"body = {(string.IsNullOrWhiteSpace(toDoUpdateDto.Body) ? "null" : "@body")}"
+            );
         }
         if (toDoUpdateDto.Completed is not null)
         {
             updatedValues.Add("completed = @completed");
         }
-        updatedValues.Add("updated_at = @now");
 
         await Update(
             tableName,
