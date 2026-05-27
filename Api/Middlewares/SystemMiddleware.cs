@@ -18,7 +18,10 @@ public class SystemMiddleware(RequestDelegate next)
             Console.WriteLine(
                 $"Method {context.Request.Method} on path {context.Request.Path} called"
             );
-            await CheckTokenExiprationAndRefreshIfNecessary(context);
+            if (!context.Request.Path.Equals("/auth/check"))
+            {
+                await CheckTokenExiprationAndRefreshIfNecessary(context);
+            }
             await _next(context);
         }
         catch (UnauthorizedAccessException ex)
@@ -65,14 +68,7 @@ public class SystemMiddleware(RequestDelegate next)
     // This will require refactoring possibly into sepearte middleware
     private async Task CheckTokenExiprationAndRefreshIfNecessary(HttpContext context)
     {
-        Console.WriteLine("Checking token expiration");
-
-        // foreach (var c in context.User.Identities)
-        // {
-        //     Console.WriteLine($"c.key: {c.Claims} | c.value: {c.Value}");
-        // }
         context.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
-        Console.WriteLine($"refreshToken {refreshToken}");
         if (string.IsNullOrWhiteSpace(refreshToken))
             return;
 
@@ -81,9 +77,6 @@ public class SystemMiddleware(RequestDelegate next)
             .User.Claims.FirstOrDefault(c => c.Type.EndsWith("nameidentifier"))
             ?.Value;
 
-        Console.WriteLine($"expiryString: {expiryString}");
-        Console.WriteLine($"userIdString: {userIdString}");
-
         if (string.IsNullOrWhiteSpace(expiryString) || string.IsNullOrWhiteSpace(userIdString))
             return;
 
@@ -91,14 +84,10 @@ public class SystemMiddleware(RequestDelegate next)
             int.TryParse(expiryString, out int expiry) && int.TryParse(userIdString, out int userId)
         )
         {
-            Console.WriteLine("HERE");
             var tokenExpiration = DateTimeOffset.FromUnixTimeSeconds(expiry);
-            Console.WriteLine($"tokenExpiration: {tokenExpiration}");
             var diff = tokenExpiration - DateTime.UtcNow;
-            Console.WriteLine($"diff: {diff.TotalSeconds}");
-            if (diff.TotalSeconds <= 60)
+            if (diff.TotalSeconds <= 120)
             {
-                Console.WriteLine("In here");
                 var userRepository =
                     context.RequestServices.GetService<IUserRepository>()
                     ?? throw new Exception("Could not resolve IUserRepository");
@@ -111,9 +100,9 @@ public class SystemMiddleware(RequestDelegate next)
                 {
                     return;
                 }
+
                 if (user.RefreshToken.Equals(refreshToken))
                 {
-                    context.Response.Cookies.Delete("accessToken");
                     authService.SetAccessToken(authService.GetJwt(user), context);
                     var newRefreshToken = authService.GetRefreshToken();
                     var expiresAt = DateTime.UtcNow.AddDays(1);
