@@ -16,8 +16,8 @@ public class UserRepository(IConfiguration configuration)
             id,
             email,
             password,
-            refresh_token,
-            refresh_token_expires_at,
+            refresh_token as refreshToken,
+            refresh_token_expires_at as refreshTokenExpiresAt,
             created_at as createdAt,
             updated_at as updatedAt
         FROM {tableName}

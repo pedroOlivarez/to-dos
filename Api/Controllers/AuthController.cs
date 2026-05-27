@@ -31,14 +31,17 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     [HttpPost]
     [Route("refresh")]
-    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<StatusCodeResult> Refresh()
     {
-        // implement
-
-        // HttpContext.Request.Cookies.TryGetValue("accessToken", out var accessToken);
-        // HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
-        // await _authService.RefreshToken(accessToken, HttpContext);
+        HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            return BadRequest();
+        var success = await _authService.RefreshToken(refreshToken, HttpContext);
+        if (!success)
+            return Unauthorized();
         return Ok();
     }
 }

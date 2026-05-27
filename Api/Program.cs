@@ -61,6 +61,7 @@ builder
             OnMessageReceived = ctx =>
             {
                 ctx.Request.Cookies.TryGetValue("accessToken", out var accessToken);
+                ctx.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
                 if (!string.IsNullOrWhiteSpace(accessToken))
                 {
                     ctx.Token = accessToken;
