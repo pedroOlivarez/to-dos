@@ -20,7 +20,23 @@ type Response<T> =
       error: string;
     });
 
-async function get<T>(route: string): Promise<Response<T[]>> {
+async function get(route: string): Promise<BaseResponse> {
+  try {
+    const response = await fetch(`${url}/${route}`, {
+      method: "get",
+      credentials,
+    });
+    return {
+      statusCode: response.status,
+      success: response.ok,
+    };
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error on get request", { cause: err });
+  }
+}
+
+async function getWithResult<T>(route: string): Promise<Response<T[]>> {
   try {
     const response = await fetch(`${url}/${route}`, {
       headers,
@@ -147,4 +163,4 @@ async function del(route: string, id: number): Promise<BaseResponse> {
   }
 }
 
-export { del, get, post, postWithResult, patch, type Response };
+export { del, get, getWithResult, post, postWithResult, patch, type Response };

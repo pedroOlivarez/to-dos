@@ -22,7 +22,7 @@ export function useToDosView() {
     new Date().toISOString(),
   );
   const [selectedToDo, setSelectedToDo] = useState<ToDo | null>(null);
-  const { data, isLoading, isError, isUnauthenticated } = useToDos(lastUpdated);
+  const { data, isLoading, isError } = useToDos(lastUpdated);
 
   const handleAddToDoButtonClick = () => setModal(TODO_MODALS.ADD);
 
@@ -73,7 +73,6 @@ export function useToDosView() {
     data,
     isLoading,
     isError,
-    isUnauthenticated,
     handleAddToDoButtonClick,
     handleSelectToDo,
     handleAddToDoDialogOpenChange,

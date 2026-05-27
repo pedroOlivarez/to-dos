@@ -1,11 +1,10 @@
-import { useEffect, type ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import { AddToDoDialog } from "../../components/todos/dialogs/AddToDoDialog/AddToDoDialog";
 import { EditToDoDialog } from "../../components/todos/dialogs/EditToDoDialog/EditToDoDialog";
 import { AddToDoButton } from "../../components/todos/AddToDoButton";
 import { ResultDisplay } from "../../components/todos/ResultDisplay";
 import { cn } from "../../libs/utils/classNames";
 import { useToDosView } from "./hooks";
-import { useNavigate } from "react-router";
 
 export function ToDos(props: ComponentProps<"div">) {
   const {
@@ -14,7 +13,6 @@ export function ToDos(props: ComponentProps<"div">) {
     data,
     isLoading,
     isError,
-    isUnauthenticated,
     handleAddToDoButtonClick,
     handleSelectToDo,
     handleAddToDoDialogOpenChange,
@@ -23,13 +21,6 @@ export function ToDos(props: ComponentProps<"div">) {
     handleCreate,
     handleArchive,
   } = useToDosView();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isUnauthenticated) {
-      navigate("/login");
-    }
-  }, [isUnauthenticated]);
 
   return (
     <>

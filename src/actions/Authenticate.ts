@@ -1,4 +1,4 @@
-import { post } from "../http";
+import { post, get } from "../http";
 
 type AuthenticationRequest = {
   email: string;
@@ -18,4 +18,10 @@ const authenticate = async (
   return response.success;
 };
 
-export { authenticate, type AuthenticationRequest };
+const checkAuthentication = async (): Promise<boolean> => {
+  const response = await get(`${route}/check`);
+
+  return response.success;
+};
+
+export { authenticate, checkAuthentication, type AuthenticationRequest };
