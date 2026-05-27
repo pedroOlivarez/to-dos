@@ -98,7 +98,7 @@ public class AuthService(
         return false;
     }
 
-    private void SetAccessToken(string token, HttpContext context)
+    public void SetAccessToken(string token, HttpContext context)
     {
         context.Response.Cookies.Append(
             "accessToken",
@@ -114,7 +114,7 @@ public class AuthService(
         );
     }
 
-    private static void SetRefreshToken(string token, DateTime expires, HttpContext context)
+    public void SetRefreshToken(string token, DateTime expires, HttpContext context)
     {
         context.Response.Cookies.Append(
             "refreshToken",
@@ -130,7 +130,7 @@ public class AuthService(
         );
     }
 
-    private string GetJwt(Entities.User user)
+    public string GetJwt(Entities.User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -154,7 +154,7 @@ public class AuthService(
         return handler.CreateToken(tokenDescriptor);
     }
 
-    private static string GetRefreshToken()
+    public string GetRefreshToken()
     {
         return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
     }

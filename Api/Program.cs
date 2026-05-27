@@ -47,7 +47,7 @@ builder
             // is this redundant? Are these the default values?
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidateLifetime = false,
             ValidateIssuerSigningKey = true,
 
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
@@ -106,9 +106,9 @@ else
 }
 
 app.UseCors(MyAllowSpecificOrigins);
+app.UseMiddleware<SystemMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<SystemMiddleware>();
 app.MapControllers();
 
 await app.RunAsync();
