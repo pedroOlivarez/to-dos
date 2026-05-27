@@ -1,8 +1,13 @@
+using System.Text;
+using Api.Authentication;
 using Api.Contracts;
 using Api.Middlewares;
 using Api.Repositories;
+using Api.Services.Auth;
 using Api.Services.ToDo;
-using Api.Settings;
+using Api.Services.User;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -15,12 +20,58 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // repos
-builder.Services.Configure<RepositorySettings>(builder.Configuration.GetSection("Neon"));
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // services
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
+
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        var secret =
+            builder.Configuration["Jwt:Secret"] ?? throw new ArgumentNullException("Jwt:Secret");
+        var issuer =
+            builder.Configuration["Jwt:Issuer"] ?? throw new ArgumentNullException("Jwt:Issuer");
+        var audience =
+            builder.Configuration["Jwt:Audience"]
+            ?? throw new ArgumentNullException("Jwt:Audience");
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            // is this redundant? Are these the default values?
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            ClockSkew = TimeSpan.Zero,
+        };
+
+        o.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = ctx =>
+            {
+                ctx.Request.Cookies.TryGetValue("accessToken", out var accessToken);
+                ctx.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
+                if (!string.IsNullOrWhiteSpace(accessToken))
+                {
+                    ctx.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            },
+        };
+    });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
@@ -29,7 +80,11 @@ builder.Services.AddCors(options =>
         {
             if (builder.Environment.IsDevelopment())
             {
-                policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+                policy
+                    .WithOrigins("http://localhost:5173")
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
             }
             else
             {
@@ -51,8 +106,9 @@ else
 }
 
 app.UseCors(MyAllowSpecificOrigins);
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseMiddleware<SystemMiddleware>();
+app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();

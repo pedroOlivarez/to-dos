@@ -1,14 +1,12 @@
 using Api.Contracts;
 using Api.Dtos;
 using Api.Entities;
-using Api.Models.Requests;
-using Api.Settings;
-using Microsoft.Extensions.Options;
+using Api.Models.Shared.Requests;
 
 namespace Api.Repositories;
 
-public class ToDoRepository(IOptions<RepositorySettings> options)
-    : BaseRepository(options),
+public class ToDoRepository(IConfiguration configuration)
+    : BaseRepository(configuration),
         IToDoRepository
 {
     private static readonly string tableName = "public.to_dos";
@@ -74,7 +72,7 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
 
     public async Task Update(int id, ToDoUpdateDto toDoUpdateDto)
     {
-        List<string> updatedValues = [];
+        List<string> updatedValues = ["updated_at = @now"];
 
         if (toDoUpdateDto.Title is not null)
         {
@@ -82,13 +80,14 @@ public class ToDoRepository(IOptions<RepositorySettings> options)
         }
         if (toDoUpdateDto.Body is not null)
         {
-            updatedValues.Add("body = @body");
+            updatedValues.Add(
+                $"body = {(string.IsNullOrWhiteSpace(toDoUpdateDto.Body) ? "null" : "@body")}"
+            );
         }
         if (toDoUpdateDto.Completed is not null)
         {
             updatedValues.Add("completed = @completed");
         }
-        updatedValues.Add("updated_at = @now");
 
         await Update(
             tableName,

@@ -1,6 +1,6 @@
 using Api.Dtos;
 using Api.Entities;
-using Api.Models.Requests;
+using Api.Models.Shared.Requests;
 
 namespace Api.Contracts;
 

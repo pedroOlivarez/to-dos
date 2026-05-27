@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useToDos } from "../../../hooks/useToDos";
+import { useToDos } from "../../hooks/useToDos";
 import {
   archiveToDo,
   createToDo,
@@ -7,7 +7,7 @@ import {
   type InsertToDo,
   type ToDo,
   type UpdateToDo,
-} from "../../../actions/ToDo";
+} from "../../actions/ToDo";
 
 type Modal = "ADD_TODO" | "EDIT_TODO";
 

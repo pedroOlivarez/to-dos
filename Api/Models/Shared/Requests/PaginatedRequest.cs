@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Models.Requests;
+namespace Api.Models.Shared.Requests;
 
 public class PaginatedRequest
 {

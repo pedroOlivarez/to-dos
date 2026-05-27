@@ -20,7 +20,10 @@ function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
         const result = await queryFn();
         if (!didCancel) setData(result);
       } catch (error) {
-        if (!didCancel) setIsError(true);
+        if (!didCancel) {
+          console.error(error);
+          setIsError(true);
+        }
       }
 
       setIsLoading(false);

@@ -1,9 +1,9 @@
 import { type ComponentProps } from "react";
-import { AddToDoDialog } from "../dialogs/AddToDoDialog/AddToDoDialog";
-import { EditToDoDialog } from "../dialogs/EditToDoDialog/EditToDoDialog";
-import { AddToDoButton } from "../AddToDoButton";
-import { ResultDisplay } from "../ResultDisplay";
-import { cn } from "../../../libs/utils/classNames";
+import { AddToDoDialog } from "../../components/todos/dialogs/AddToDoDialog/AddToDoDialog";
+import { EditToDoDialog } from "../../components/todos/dialogs/EditToDoDialog/EditToDoDialog";
+import { AddToDoButton } from "../../components/todos/AddToDoButton";
+import { ResultDisplay } from "../../components/todos/ResultDisplay";
+import { cn } from "../../libs/utils/classNames";
 import { useToDosView } from "./hooks";
 
 export function ToDos(props: ComponentProps<"div">) {
