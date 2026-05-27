@@ -8,6 +8,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
+    // null is falsey. This would immediately navigate away and never allow children to render because component would dismount before auth result comes back
     if (isAuthenticated === false) {
       navigate("/login");
     }
