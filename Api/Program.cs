@@ -106,8 +106,8 @@ else
 }
 
 app.UseCors(MyAllowSpecificOrigins);
-app.UseMiddleware<SystemMiddleware>();
 app.UseAuthentication();
+app.UseMiddleware<SystemMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
