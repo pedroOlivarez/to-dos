@@ -68,7 +68,7 @@ public class ToDoRepository(IConfiguration configuration)
             @$"
             {baseQueryString}
             AND user_id = @userId
-            ORDER BY completed ASC, title
+            ORDER BY completed ASC, updated_at DESC
             LIMIT {request.PageSize}
             OFFSET {request.OffSet}
         ";
