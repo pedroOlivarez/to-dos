@@ -22,12 +22,12 @@ public class ExceptionMiddleware(RequestDelegate next)
             var problemDetails = new ProblemDetails
             {
                 Title = "Unauthorized",
-                Status = StatusCodes.Status401Unauthorized,
+                Status = StatusCodes.Status403Forbidden,
                 Instance = context.Request.Path,
                 Detail = $"{ex.Message} traceId: {traceId}",
             };
 
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
         catch (KeyNotFoundException ex)

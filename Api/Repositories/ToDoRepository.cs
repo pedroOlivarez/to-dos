@@ -18,6 +18,7 @@ public class ToDoRepository(IConfiguration configuration)
             title,
             body,
             completed,
+            user_id as userId,
             created_at as createdAt,
             updated_at as updatedAt
         FROM {tableName}
@@ -30,13 +31,13 @@ public class ToDoRepository(IConfiguration configuration)
         AND Id = @Id
     ";
 
-    public async Task<ToDo> Create(ToDoInsertDto toDoInsertDto)
+    public async Task<ToDo> Create(ToDoInsertDto toDoInsertDto, int userId)
     {
         var insertSql =
             @$"
             INSERT INTO {tableName}
-            (title, body, created_at, updated_at)
-            VALUES(@title, @body, @now, @now)
+            (title, body, user_id, created_at, updated_at)
+            VALUES(@title, @body, @userId, @now, @now)
             RETURNING id;
         ";
 
@@ -47,6 +48,7 @@ public class ToDoRepository(IConfiguration configuration)
                 title = toDoInsertDto.Title,
                 body = toDoInsertDto.Body,
                 now = DateTime.UtcNow,
+                userId,
             }
         );
 
@@ -54,22 +56,23 @@ public class ToDoRepository(IConfiguration configuration)
             ?? throw new KeyNotFoundException($"ToDo with id: {createdId} not found");
     }
 
-    public async Task<ToDo> GetById(int id)
+    public async Task<ToDo> GetById(int toDoId)
     {
-        return await GetById<ToDo>(queryOneString, id)
-            ?? throw new KeyNotFoundException($"ToDo with id: {id} not found");
+        return await GetById<ToDo>(queryOneString, toDoId)
+            ?? throw new KeyNotFoundException($"ToDo with id: {toDoId} not found");
     }
 
-    public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request)
+    public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request, int userId)
     {
         var paginatedSql =
             @$"
-        {baseQueryString}
-        ORDER BY completed ASC, title
-        LIMIT {request.PageSize}
-        OFFSET {request.OffSet}
+            {baseQueryString}
+            AND user_id = @userId
+            ORDER BY completed ASC, title
+            LIMIT {request.PageSize}
+            OFFSET {request.OffSet}
         ";
-        return await GetMany<ToDo>(paginatedSql, tableName);
+        return await GetMany<ToDo>(paginatedSql, tableName, new { userId });
     }
 
     public async Task Update(int id, ToDoUpdateDto toDoUpdateDto)

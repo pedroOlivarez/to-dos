@@ -10,21 +10,21 @@ public class ToDoService(IToDoRepository toDoRepository) : IToDoService
 {
     private readonly IToDoRepository _toDoRepository = toDoRepository;
 
-    public async Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto)
+    public async Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto, int userId)
     {
-        var ToDo = await _toDoRepository.Create(toDoInsertDto);
+        var ToDo = await _toDoRepository.Create(toDoInsertDto, userId);
 
         return ToDo.ToModel();
     }
 
-    public async Task<ToDoModel> GetById(int id)
+    public async Task<ToDoModel> GetById(int toDoId, int userId)
     {
-        return (await _toDoRepository.GetById(id)).ToModel();
+        return (await CheckExistsAndAccess(toDoId, userId)).ToModel();
     }
 
-    public async Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request)
+    public async Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request, int userId)
     {
-        var (total, data) = await _toDoRepository.GetMany(request);
+        var (total, data) = await _toDoRepository.GetMany(request, userId);
         return new PaginatedResponse<ToDoModel>
         {
             Data = data.Select(d => d.ToModel()),
@@ -38,24 +38,27 @@ public class ToDoService(IToDoRepository toDoRepository) : IToDoService
         };
     }
 
-    public async Task<ToDoModel> Update(int id, ToDoUpdateDto toDoUpdateDto)
+    public async Task<ToDoModel> Update(int toDoId, ToDoUpdateDto toDoUpdateDto, int userId)
     {
-        await CheckExists(id);
-        await _toDoRepository.Update(id, toDoUpdateDto);
+        await CheckExistsAndAccess(toDoId, userId);
+        await _toDoRepository.Update(toDoId, toDoUpdateDto);
 
-        return (await _toDoRepository.GetById(id)).ToModel();
+        return (await _toDoRepository.GetById(toDoId)).ToModel();
     }
 
-    public async Task Archive(int id)
+    public async Task Archive(int id, int userId)
     {
-        await CheckExists(id);
+        await CheckExistsAndAccess(id, userId);
         await _toDoRepository.Archive(id);
     }
 
-    private async Task CheckExists(int id)
+    private async Task<Entities.ToDo> CheckExistsAndAccess(int id, int userId)
     {
-        var exists = (await _toDoRepository.GetById(id)) is not null;
-        if (!exists)
-            throw new Exception("Not Found");
+        var toDo = await _toDoRepository.GetById(id);
+
+        if (toDo.UserId != userId)
+            throw new UnauthorizedAccessException("User does not have access to this resource");
+
+        return toDo;
     }
 }

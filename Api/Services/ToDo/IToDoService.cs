@@ -7,13 +7,13 @@ namespace Api.Services.ToDo;
 
 public interface IToDoService
 {
-    Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request);
+    Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request, int userId);
 
-    Task<ToDoModel> GetById(int id);
+    Task<ToDoModel> GetById(int toDoId, int userId);
 
-    Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto);
+    Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto, int userId);
 
-    Task<ToDoModel> Update(int id, ToDoUpdateDto toDoUpdateDto);
+    Task<ToDoModel> Update(int toDoId, ToDoUpdateDto toDoUpdateDto, int userId);
 
-    Task Archive(int id);
+    Task Archive(int toDoId, int userId);
 }
