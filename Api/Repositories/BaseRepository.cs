@@ -22,7 +22,11 @@ public class BaseRepository(IConfiguration configuration) : IBaseRepository
         return await connection.QueryFirstOrDefaultAsync<T?>(Sql, sqlParams);
     }
 
-    public async Task<(int Total, IEnumerable<T>)> GetMany<T>(string Sql, string tableName)
+    public async Task<(int Total, IEnumerable<T>)> GetMany<T>(
+        string Sql,
+        string tableName,
+        object? sqlParams = null
+    )
     {
         var countQuery =
             @$"
@@ -36,7 +40,7 @@ public class BaseRepository(IConfiguration configuration) : IBaseRepository
         {
             return (total, []);
         }
-        var data = await connection.QueryAsync<T>(Sql) ?? [];
+        var data = await connection.QueryAsync<T>(Sql, sqlParams) ?? [];
         return (total, data);
     }
 

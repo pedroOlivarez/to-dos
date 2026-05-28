@@ -10,6 +10,8 @@ public class ToDo : BaseEntity
 
     public required bool Completed { get; set; }
 
+    public required int UserId { get; set; }
+
     public ToDoModel ToModel()
     {
         return new ToDoModel

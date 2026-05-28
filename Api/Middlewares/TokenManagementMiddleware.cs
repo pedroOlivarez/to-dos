@@ -1,6 +1,5 @@
 using Api.Contracts;
 using Api.Dtos;
-using Api.Entities;
 using Api.Services.Auth;
 
 namespace Api.Middlewares;
