@@ -9,6 +9,10 @@ public interface IUserRepository
 
     public Task<User> GetByEmail(string email);
 
+    public Task<User> GetByRefreshToken(string refreshToken);
+
+    public Task<bool> RefreshTokenExists(string refreshToken);
+
     public Task<User> Create(UserInsertDto userInsertDto);
 
     public Task Update(int id, UserUpdateDto userUpdateDto);

@@ -32,35 +32,31 @@ public class AuthService(
         HttpContext context
     )
     {
-        try
+        var user = await _userRepository.GetByEmail(authenticationRequest.Email);
+        if (user == null)
         {
-            var user = await _userRepository.GetByEmail(authenticationRequest.Email);
-            var verificationResult = _passwordHasher.VerifyHashedPassword(
-                user.Password,
-                authenticationRequest.Password
-            );
-            if (verificationResult == PasswordVerificationResult.Success)
+            return false;
+        }
+        var verificationResult = _passwordHasher.VerifyHashedPassword(
+            user.Password,
+            authenticationRequest.Password
+        );
+        if (verificationResult == PasswordVerificationResult.Success)
+        {
+            // extract to private doodad
+            SetAccessToken(GetJwt(user), context);
+            var refreshToken = await GetRefreshToken();
+            var expiresAt = DateTime.UtcNow.AddDays(1);
+            UserUpdateDto userUpdateDto = new()
             {
-                // extract to private doodad
-                SetAccessToken(GetJwt(user), context);
-                var refreshToken = GetRefreshToken();
-                var expiresAt = DateTime.UtcNow.AddDays(1);
-                UserUpdateDto userUpdateDto = new()
-                {
-                    RefreshToken = refreshToken,
-                    RefreshTokenExpiresAt = expiresAt,
-                };
-                await _userRepository.Update(user.Id, userUpdateDto);
-                SetRefreshToken(refreshToken, expiresAt, context);
-                return true;
-            }
-            return false;
+                RefreshToken = refreshToken,
+                RefreshTokenExpiresAt = expiresAt,
+            };
+            await _userRepository.Update(user.Id, userUpdateDto);
+            SetRefreshToken(refreshToken, expiresAt, context);
+            return true;
         }
-        // suppress 404 on email not found to not expose that information
-        catch (KeyNotFoundException)
-        {
-            return false;
-        }
+        return false;
     }
 
     public void SetAccessToken(string token, HttpContext context)
@@ -71,7 +67,7 @@ public class AuthService(
             new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtExpiry),
-                HttpOnly = true,
+                HttpOnly = false,
                 IsEssential = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
@@ -119,8 +115,22 @@ public class AuthService(
         return handler.CreateToken(tokenDescriptor);
     }
 
-    public string GetRefreshToken()
+    public async Task<string> GetRefreshToken()
     {
-        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        var tokenExists = true;
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        var potentialRefreshToken = Convert.ToBase64String(randomNumber);
+        while (tokenExists)
+        {
+            tokenExists = await _userRepository.RefreshTokenExists(potentialRefreshToken);
+            if (tokenExists)
+            {
+                rng.GetBytes(randomNumber);
+                potentialRefreshToken = Convert.ToBase64String(randomNumber);
+            }
+        }
+        return potentialRefreshToken;
     }
 }

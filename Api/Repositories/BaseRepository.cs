@@ -10,18 +10,16 @@ public class BaseRepository(IConfiguration configuration) : IBaseRepository
         configuration["ConnectionStrings:Neon"]
         ?? throw new ArgumentNullException(nameof(_connectionString));
 
-    public async Task<T> GetById<T>(string Sql, int id)
+    public async Task<T?> GetById<T>(string Sql, int id)
     {
         using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryFirstOrDefaultAsync<T?>(Sql, new { id })
-            ?? throw new KeyNotFoundException($"Entity with id {id} not found");
+        return await connection.QueryFirstOrDefaultAsync<T?>(Sql, new { id });
     }
 
-    public async Task<T> GetByParams<T>(string Sql, object sqlParams)
+    public async Task<T?> GetByParams<T>(string Sql, object sqlParams)
     {
         using var connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryFirstOrDefaultAsync<T?>(Sql, sqlParams)
-            ?? throw new KeyNotFoundException($"Entity not found");
+        return await connection.QueryFirstOrDefaultAsync<T?>(Sql, sqlParams);
     }
 
     public async Task<(int Total, IEnumerable<T>)> GetMany<T>(string Sql, string tableName)
@@ -34,7 +32,11 @@ public class BaseRepository(IConfiguration configuration) : IBaseRepository
       ";
         using var connection = new NpgsqlConnection(_connectionString);
         var total = await connection.QueryFirstOrDefaultAsync<int>(countQuery);
-        var data = await connection.QueryAsync<T>(Sql);
+        if (total == 0)
+        {
+            return (total, []);
+        }
+        var data = await connection.QueryAsync<T>(Sql) ?? [];
         return (total, data);
     }
 

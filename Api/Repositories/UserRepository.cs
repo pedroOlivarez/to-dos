@@ -50,12 +50,14 @@ public class UserRepository(IConfiguration configuration)
             }
         );
 
-        return await GetById<User>(queryOneString, createdId);
+        return await GetById<User>(queryOneString, createdId)
+            ?? throw new KeyNotFoundException($"User with id {createdId} not found");
     }
 
     public async Task<User> GetById(int id)
     {
-        return await GetById<User>(queryOneString, id);
+        return await GetById<User>(queryOneString, id)
+            ?? throw new KeyNotFoundException($"User with id {id} not found");
     }
 
     public async Task<User> GetByEmail(string email)
@@ -65,7 +67,21 @@ public class UserRepository(IConfiguration configuration)
                {baseQueryString}
                AND Email = @email
             ";
-        return await GetByParams<User>(sql, new { email });
+        return await GetByParams<User>(sql, new { email })
+            ?? throw new KeyNotFoundException($"User with email {email} not found");
+    }
+
+    public async Task<User> GetByRefreshToken(string refreshToken)
+    {
+        var sql =
+            @$"
+            {baseQueryString}
+            AND refresh_token = @refreshToken
+        ";
+        return await GetByParams<User>(sql, new { refreshToken })
+            ?? throw new KeyNotFoundException(
+                $"User with a refreshToken matching {refreshToken} not found"
+            );
     }
 
     public async Task Update(int id, UserUpdateDto userUpdateDto)
@@ -104,5 +120,19 @@ public class UserRepository(IConfiguration configuration)
     public async Task Archive(int id)
     {
         await Archive(tableName, id);
+    }
+
+    public async Task<bool> RefreshTokenExists(string refreshToken)
+    {
+        var sql =
+            @$"
+        SELECT EXISTS(
+        SELECT 1
+        FROM {tableName}
+        WHERE archived = false
+        AND refresh_token = @refreshToken
+        )
+    ";
+        return await GetByParams<bool>(sql, new { refreshToken });
     }
 }

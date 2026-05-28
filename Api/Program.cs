@@ -107,8 +107,9 @@ else
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
-app.UseMiddleware<SystemMiddleware>();
+app.UseMiddleware<TokenManagementMiddleware>();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 await app.RunAsync();

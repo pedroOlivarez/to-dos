@@ -8,5 +8,5 @@ public interface IAuthService
     void SetAccessToken(string token, HttpContext context);
     void SetRefreshToken(string token, DateTime expires, HttpContext context);
     string GetJwt(Entities.User user);
-    string GetRefreshToken();
+    Task<string> GetRefreshToken();
 }

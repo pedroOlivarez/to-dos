@@ -1,12 +1,15 @@
-import { type ComponentProps } from "react";
+import { useEffect, type ComponentProps } from "react";
 import { Field, FieldGroup } from "../../components/ui/Field";
 import { Label } from "../../components/ui/Label";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useLogin } from "./hooks";
 import { cn } from "../../libs/utils/classNames";
+import { useAuth } from "../../components/auth/hooks";
+import { useNavigate } from "react-router";
 
 export function Login(props: ComponentProps<"div">) {
+  const navigate = useNavigate();
   const {
     errors,
     formIsTouched,
@@ -16,6 +19,14 @@ export function Login(props: ComponentProps<"div">) {
     validatePassword,
     handleFormSubmit,
   } = useLogin();
+
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
 
   return (
     <div
@@ -57,6 +68,7 @@ export function Login(props: ComponentProps<"div">) {
         >
           Log in
         </Button>
+        {/* Register workflow goes here */}
       </form>
     </div>
   );

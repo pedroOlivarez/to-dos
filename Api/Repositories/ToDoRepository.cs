@@ -50,12 +50,14 @@ public class ToDoRepository(IConfiguration configuration)
             }
         );
 
-        return await GetById<ToDo>(queryOneString, createdId);
+        return await GetById<ToDo>(queryOneString, createdId)
+            ?? throw new KeyNotFoundException($"ToDo with id: {createdId} not found");
     }
 
     public async Task<ToDo> GetById(int id)
     {
-        return await GetById<ToDo>(queryOneString, id);
+        return await GetById<ToDo>(queryOneString, id)
+            ?? throw new KeyNotFoundException($"ToDo with id: {id} not found");
     }
 
     public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request)
