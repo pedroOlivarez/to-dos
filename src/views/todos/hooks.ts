@@ -16,13 +16,23 @@ const TODO_MODALS: Record<string, Modal> = {
   EDIT: "EDIT_TODO",
 };
 
-export function useToDosView({ page }: { page: string }) {
+export function useToDosView({
+  page,
+  searchTerm,
+}: {
+  page: string;
+  searchTerm?: string;
+}) {
   const [modal, setModal] = useState<Modal | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>(
     new Date().toISOString(),
   );
   const [selectedToDo, setSelectedToDo] = useState<ToDo | null>(null);
-  const { data, isLoading, isError } = useToDos(lastUpdated, page);
+  const { data, isLoading, isError } = useToDos({
+    lastUpdated,
+    page,
+    searchTerm,
+  });
 
   const handleAddToDoButtonClick = () => setModal(TODO_MODALS.ADD);
 

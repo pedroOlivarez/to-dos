@@ -7,12 +7,17 @@ import { cn } from "../../libs/utils/classNames";
 import { useToDosView } from "./hooks";
 import { useSearchParams } from "react-router";
 import { Pagination } from "../../components/ui/Pagination";
+import { Search } from "../../components/ui/Search";
 
 export function ToDos(props: ComponentProps<"div">) {
-  let [searchParams] = useSearchParams();
+  let [searchParams, setSearchParams] = useSearchParams();
 
   const page = useMemo(() => {
     return searchParams.get("page") ?? "1";
+  }, [searchParams]);
+
+  const searchTerm = useMemo(() => {
+    return searchParams.get("q") ?? undefined;
   }, [searchParams]);
 
   const {
@@ -28,22 +33,36 @@ export function ToDos(props: ComponentProps<"div">) {
     handleUpdate,
     handleCreate,
     handleArchive,
-  } = useToDosView({ page });
+  } = useToDosView({ page, searchTerm });
 
   const showPagination = useMemo(
     () => data && data.meta && data.meta.totalPages > data.data.length,
     [data],
   );
 
+  const handleSearch = (term: string | null) => {
+    if (term) {
+      searchParams.set("q", term);
+    } else {
+      searchParams.delete("q");
+    }
+    setSearchParams(searchParams);
+  };
+
   return (
     <>
       <div
         className={cn(
-          "flex flex-col min-h-full w-full p-2 pr-18 sm:items-start  items-center",
+          "flex flex-col min-h-full w-full p-2 pr-18 sm:items-start  items-center gap-2",
           props.className,
         )}
       >
         {showPagination ? <Pagination {...data!.meta} /> : null}
+        <Search
+          onInput={handleSearch}
+          debounceDelay={500}
+          className="bg-black/65"
+        />
         <ResultDisplay
           onSelectToDo={handleSelectToDo}
           toDos={data?.data ?? null}
