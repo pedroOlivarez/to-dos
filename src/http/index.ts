@@ -10,10 +10,22 @@ type BaseResponse = {
   success: boolean;
 };
 
+type Meta = {
+  page: number;
+  pageSize: number;
+  count: number;
+  total: number;
+  totalPages: number;
+  offSet: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
 type Response<T> =
   | (BaseResponse & {
       success: true;
       data: T;
+      meta?: Meta;
     })
   | (BaseResponse & {
       success: false;
@@ -55,6 +67,7 @@ async function getWithResult<T>(
         statusCode: response.status,
         success: true,
         data: responseBody.data as T[],
+        meta: responseBody.meta ? (responseBody.meta as Meta) : undefined,
       };
     }
     return {
@@ -169,4 +182,13 @@ async function del(route: string, id: number): Promise<BaseResponse> {
   }
 }
 
-export { del, get, getWithResult, post, postWithResult, patch, type Response };
+export {
+  del,
+  get,
+  getWithResult,
+  post,
+  postWithResult,
+  patch,
+  type Meta,
+  type Response,
+};

@@ -1,4 +1,4 @@
-import { patch, del, postWithResult, getWithResult } from "../http";
+import { patch, del, postWithResult, getWithResult, type Meta } from "../http";
 import { adjustedDate } from "../libs/utils/dateHelpers";
 
 type InsertToDo = {
@@ -18,9 +18,14 @@ type UpdateToDo = {
   completed?: boolean;
 };
 
+// To-Do: this can probably be a general class in a types folder in libs
+type PaginatedResponse = { data: ToDo[]; meta: Meta };
+
 const route = "toDos";
 
-const getToDos = async (args?: Record<string, string>): Promise<ToDo[]> => {
+const getToDos = async (
+  args?: Record<string, string>,
+): Promise<PaginatedResponse> => {
   const params = args ? new URLSearchParams() : undefined;
   if (params && args) {
     for (const key in args) {
@@ -31,10 +36,13 @@ const getToDos = async (args?: Record<string, string>): Promise<ToDo[]> => {
   if (!response.success) {
     throw new Error(response.error);
   }
-  return response.data.map((r) => ({
-    ...r,
-    updatedAt: adjustedDate(new Date(r.updatedAt)),
-  }));
+  return {
+    data: response.data.map((r) => ({
+      ...r,
+      updatedAt: adjustedDate(new Date(r.updatedAt)),
+    })),
+    meta: response.meta!,
+  };
 };
 
 const createToDo = async (toDo: InsertToDo): Promise<ToDo> => {
@@ -72,6 +80,7 @@ export {
   getToDos,
   updateToDo,
   type InsertToDo,
+  type PaginatedResponse,
   type ToDo,
   type UpdateToDo,
 };

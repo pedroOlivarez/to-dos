@@ -21,7 +21,10 @@ export function ToDo({ toDo, onClick, ...rest }: ToDoProps) {
       }}
     >
       <div className="text-black/85 truncate min-h-5 max-h-5">{toDo.title}</div>
-      <div className="text-black/70 text-wrap">{toDo.body}</div>
+      {/* To-Do: figure out appropriate line clamps for each screen size */}
+      <div className="text-black/70 text-wrap sm:line-clamp-4 line-clamp-3 truncate">
+        {toDo.body}
+      </div>
       <div className="text-black/60 text-xs">
         updatedAt: {toDo.updatedAt.toLocaleDateString()}{" "}
         {toDo.updatedAt.toLocaleTimeString("en-US", {
