@@ -36,12 +36,18 @@ async function get(route: string): Promise<BaseResponse> {
   }
 }
 
-async function getWithResult<T>(route: string): Promise<Response<T[]>> {
+async function getWithResult<T>(
+  route: string,
+  params?: URLSearchParams,
+): Promise<Response<T[]>> {
   try {
-    const response = await fetch(`${url}/${route}`, {
-      headers,
-      credentials,
-    });
+    const response = await fetch(
+      `${url}/${route}${params ? `?${params}` : ""}`,
+      {
+        headers,
+        credentials,
+      },
+    );
 
     if (response.ok) {
       const responseBody = await response.json();

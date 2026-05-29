@@ -20,8 +20,14 @@ type UpdateToDo = {
 
 const route = "toDos";
 
-const getToDos = async (): Promise<ToDo[]> => {
-  const response = await getWithResult<ToDo>(route);
+const getToDos = async (args?: Record<string, string>): Promise<ToDo[]> => {
+  const params = args ? new URLSearchParams() : undefined;
+  if (params && args) {
+    for (const key in args) {
+      params.append(key, args[key]);
+    }
+  }
+  const response = await getWithResult<ToDo>(route, params);
   if (!response.success) {
     throw new Error(response.error);
   }
