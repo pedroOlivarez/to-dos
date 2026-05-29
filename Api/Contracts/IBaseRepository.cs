@@ -2,11 +2,8 @@ namespace Api.Contracts;
 
 public interface IBaseRepository
 {
-    public Task<(int Total, IEnumerable<T>)> GetMany<T>(
-        string Sql,
-        string tableName,
-        object? sqlParams = null
-    );
+    public Task<IEnumerable<T>> GetMany<T>(string Sql, object? sqlParams = null);
+    public Task<int> GetCount(string sql, object? sqlParams = null);
     public Task<T?> GetById<T>(string Sql, int Id);
     public Task<T?> GetByParams<T>(string Sql, object sqlParams);
     public Task<int> Create(string Sql, object values);

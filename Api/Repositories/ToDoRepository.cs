@@ -67,12 +67,23 @@ public class ToDoRepository(IConfiguration configuration)
         var paginatedSql =
             @$"
             {baseQueryString}
-            AND user_id = @userId
+            AND user_id = 5
             ORDER BY completed ASC, updated_at DESC
             LIMIT {request.PageSize}
             OFFSET {request.OffSet}
         ";
-        return await GetMany<ToDo>(paginatedSql, tableName, new { userId });
+        var countSql =
+            @$"
+            SELECT COUNT(id)
+            FROM {tableName}
+            WHERE archived = false
+            AND user_id = @userId
+        ";
+        var sqlParams = new { userId };
+        var total = await GetCount(countSql, sqlParams);
+        var data = total != 0 ? await GetMany<ToDo>(paginatedSql, sqlParams) : [];
+
+        return (total, data);
     }
 
     public async Task Update(int id, ToDoUpdateDto toDoUpdateDto)

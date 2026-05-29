@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 type UseQueryArgs<T> = {
   queryKey: string;
-  queryFn: () => Promise<T>;
+  args?: Record<string, string>;
+  queryFn: (args?: Record<string, string>) => Promise<T>;
 };
 
-function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
+function useQuery<T>({ queryFn, queryKey, args }: UseQueryArgs<T>) {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -17,7 +18,7 @@ function useQuery<T>({ queryFn, queryKey }: UseQueryArgs<T>) {
       setIsLoading(true);
 
       try {
-        const result = await queryFn();
+        const result = await queryFn(args);
         if (!didCancel) setData(result);
       } catch (error) {
         if (!didCancel) {

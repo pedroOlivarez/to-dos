@@ -22,26 +22,18 @@ public class BaseRepository(IConfiguration configuration) : IBaseRepository
         return await connection.QueryFirstOrDefaultAsync<T?>(Sql, sqlParams);
     }
 
-    public async Task<(int Total, IEnumerable<T>)> GetMany<T>(
-        string Sql,
-        string tableName,
-        object? sqlParams = null
-    )
+    public async Task<IEnumerable<T>> GetMany<T>(string Sql, object? sqlParams = null)
     {
-        var countQuery =
-            @$"
-         SELECT COUNT(id)
-         FROM {tableName}
-         WHERE archived = false
-      ";
         using var connection = new NpgsqlConnection(_connectionString);
-        var total = await connection.QueryFirstOrDefaultAsync<int>(countQuery);
-        if (total == 0)
-        {
-            return (total, []);
-        }
         var data = await connection.QueryAsync<T>(Sql, sqlParams) ?? [];
-        return (total, data);
+        return data;
+    }
+
+    public async Task<int> GetCount(string sql, object? sqlParams = null)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var total = await connection.QueryFirstOrDefaultAsync<int>(sql, sqlParams);
+        return total;
     }
 
     public async Task<int> Create(string Sql, object values)

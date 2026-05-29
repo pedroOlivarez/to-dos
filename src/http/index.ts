@@ -10,10 +10,22 @@ type BaseResponse = {
   success: boolean;
 };
 
+type Meta = {
+  page: number;
+  pageSize: number;
+  count: number;
+  total: number;
+  totalPages: number;
+  offSet: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
 type Response<T> =
   | (BaseResponse & {
       success: true;
       data: T;
+      meta?: Meta;
     })
   | (BaseResponse & {
       success: false;
@@ -36,12 +48,18 @@ async function get(route: string): Promise<BaseResponse> {
   }
 }
 
-async function getWithResult<T>(route: string): Promise<Response<T[]>> {
+async function getWithResult<T>(
+  route: string,
+  params?: URLSearchParams,
+): Promise<Response<T[]>> {
   try {
-    const response = await fetch(`${url}/${route}`, {
-      headers,
-      credentials,
-    });
+    const response = await fetch(
+      `${url}/${route}${params ? `?${params}` : ""}`,
+      {
+        headers,
+        credentials,
+      },
+    );
 
     if (response.ok) {
       const responseBody = await response.json();
@@ -49,6 +67,7 @@ async function getWithResult<T>(route: string): Promise<Response<T[]>> {
         statusCode: response.status,
         success: true,
         data: responseBody.data as T[],
+        meta: responseBody.meta ? (responseBody.meta as Meta) : undefined,
       };
     }
     return {
@@ -163,4 +182,13 @@ async function del(route: string, id: number): Promise<BaseResponse> {
   }
 }
 
-export { del, get, getWithResult, post, postWithResult, patch, type Response };
+export {
+  del,
+  get,
+  getWithResult,
+  post,
+  postWithResult,
+  patch,
+  type Meta,
+  type Response,
+};

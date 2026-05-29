@@ -11,7 +11,7 @@ public class Meta
     public required int Total { get; set; }
 
     // delete what gets unused here
-    public int TotalPages => (int)Math.Ceiling((double)(Total / PageSize));
+    public int TotalPages => Math.Max((int)Math.Ceiling((double)(Total / PageSize)), 1);
     public int OffSet => (Page - 1) * PageSize;
     public bool HasNext => Page < TotalPages;
     public bool HasPrevious => Page > 1;
