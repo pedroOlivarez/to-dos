@@ -57,12 +57,13 @@ export function ToDos(props: ComponentProps<"div">) {
           props.className,
         )}
       >
-        {showPagination ? <Pagination {...data!.meta} /> : null}
         <Search
           onInput={handleSearch}
           debounceDelay={500}
           className="bg-black/65"
         />
+        {showPagination ? <Pagination {...data!.meta} /> : null}
+
         <ResultDisplay
           onSelectToDo={handleSelectToDo}
           toDos={data?.data ?? null}
