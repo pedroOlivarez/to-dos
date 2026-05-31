@@ -1,4 +1,4 @@
-import { Button } from '../../../ui/Button';
+import { Button } from '../../../ui/Button/Button';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../../ui/Dialog';
 import { Field, FieldGroup } from '../../../ui/Field';
 import { Input } from '../../../ui/Input';
