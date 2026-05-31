@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Models.Shared.Requests;
@@ -17,6 +18,6 @@ public class PaginatedRequest
 
     public string? SanitizedQuery =>
         !string.IsNullOrWhiteSpace(Query)
-            ? $"%{Query.Replace("[", "[[]").Replace("%", "[%]").ToLower()}%"
+            ? $"%{WebUtility.UrlDecode(Query).Replace("[", "[[]").Replace("%", "[%]").ToLower()}%"
             : null;
 }
