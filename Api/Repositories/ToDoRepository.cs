@@ -64,10 +64,19 @@ public class ToDoRepository(IConfiguration configuration)
 
     public async Task<(int Total, IEnumerable<ToDo>)> GetMany(PaginatedRequest request, int userId)
     {
+        var queryClause = !string.IsNullOrWhiteSpace(request.SanitizedQuery)
+            ? @$"
+                AND (
+                    LOWER(title) LIKE @query
+                    OR LOWER(body) LIKE @query
+                ) 
+            "
+            : null;
         var paginatedSql =
             @$"
             {baseQueryString}
-            AND user_id = 5
+            AND user_id = @userId
+            {queryClause}
             ORDER BY completed ASC, updated_at DESC
             LIMIT {request.PageSize}
             OFFSET {request.OffSet}
@@ -78,8 +87,9 @@ public class ToDoRepository(IConfiguration configuration)
             FROM {tableName}
             WHERE archived = false
             AND user_id = @userId
+            {queryClause}
         ";
-        var sqlParams = new { userId };
+        var sqlParams = new { userId, query = request.SanitizedQuery };
         var total = await GetCount(countSql, sqlParams);
         var data = total != 0 ? await GetMany<ToDo>(paginatedSql, sqlParams) : [];
 
