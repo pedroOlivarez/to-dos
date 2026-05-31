@@ -21,8 +21,8 @@ export function Login(props: ComponentProps<"div">) {
     formIsTouched,
     formIsValid,
     isSubmitting,
-    validateEmail,
-    validatePassword,
+    handleEmailBlur,
+    handlePasswordInput,
     handleFormSubmit,
   } = useLogin(type);
 
@@ -56,7 +56,7 @@ export function Login(props: ComponentProps<"div">) {
             <Input
               id="email"
               name="user_email"
-              onBlur={validateEmail}
+              onBlur={handleEmailBlur}
               className={errors.email ? "border border-red-400" : ""}
               placeholder="email"
               maxLength={500}
@@ -69,7 +69,7 @@ export function Login(props: ComponentProps<"div">) {
               id="password"
               name="user_password"
               type="password"
-              onBlur={validatePassword}
+              onChange={handlePasswordInput}
               className={errors.password ? "border border-red-400" : ""}
               placeholder="password"
               maxLength={500}

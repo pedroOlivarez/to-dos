@@ -7,9 +7,6 @@ import { register } from "../../actions/User";
 import { containsNumber, isValidEmail } from "../../libs/utils/stringUtils";
 import { useNavigate } from "react-router";
 
-// To-Do (high): not great ux in terms of when the button becomes triggerable again on
-// invalid credentials or password in use type of deal
-// gonna need some tricky logi
 export function useLogin(type: "authenticate" | "register") {
   const navigate = useNavigate();
   const [currentState, setCurrentState] = useState<AuthenticationRequest>({
@@ -32,8 +29,13 @@ export function useLogin(type: "authenticate" | "register") {
   }, [currentState, errors]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const validateEmail = (e: FocusEvent<HTMLInputElement, Element>) => {
+  const handleEmailBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     const email = e.currentTarget.value.trim();
+    validateEmail(email);
+    validatePassword(currentState.password);
+  };
+
+  const validateEmail = (email: string) => {
     const isBlank = !email;
     const isValid = isValidEmail(email);
     if (isValid) {
@@ -52,8 +54,15 @@ export function useLogin(type: "authenticate" | "register") {
     }));
   };
 
-  const validatePassword = (e: FocusEvent<HTMLInputElement, Element>) => {
+  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const password = e.currentTarget.value;
+    validatePassword(password);
+    if (errors.email !== "Email is already in use") {
+      validateEmail(currentState.email);
+    }
+  };
+
+  const validatePassword = (password: string) => {
     const isValidLength = password.length >= 8;
     const isValid = containsNumber(password);
     if (isValid) {
@@ -132,8 +141,8 @@ export function useLogin(type: "authenticate" | "register") {
     formIsTouched,
     formIsValid,
     isSubmitting,
-    validateEmail,
-    validatePassword,
+    handleEmailBlur,
+    handlePasswordInput,
     handleFormSubmit,
   };
 }
