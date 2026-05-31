@@ -32,7 +32,9 @@ export function useLogin(type: "authenticate" | "register") {
   const handleEmailBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     const email = e.currentTarget.value.trim();
     validateEmail(email);
-    validatePassword(currentState.password);
+    if (currentState.password) {
+      validatePassword(currentState.password);
+    }
   };
 
   const validateEmail = (email: string) => {
@@ -54,7 +56,7 @@ export function useLogin(type: "authenticate" | "register") {
     }));
   };
 
-  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     const password = e.currentTarget.value;
     validatePassword(password);
     if (errors.email !== "Email is already in use") {
@@ -142,7 +144,7 @@ export function useLogin(type: "authenticate" | "register") {
     formIsValid,
     isSubmitting,
     handleEmailBlur,
-    handlePasswordInput,
+    handlePasswordBlur,
     handleFormSubmit,
   };
 }

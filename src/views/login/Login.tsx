@@ -22,7 +22,7 @@ export function Login(props: ComponentProps<"div">) {
     formIsValid,
     isSubmitting,
     handleEmailBlur,
-    handlePasswordInput,
+    handlePasswordBlur,
     handleFormSubmit,
   } = useLogin(type);
 
@@ -69,7 +69,7 @@ export function Login(props: ComponentProps<"div">) {
               id="password"
               name="user_password"
               type="password"
-              onChange={handlePasswordInput}
+              onBlur={handlePasswordBlur}
               className={errors.password ? "border border-red-400" : ""}
               placeholder="password"
               maxLength={500}
