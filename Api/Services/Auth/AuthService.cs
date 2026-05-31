@@ -43,6 +43,7 @@ public class AuthService(
         );
         if (verificationResult == PasswordVerificationResult.Success)
         {
+            // To-Do (medium DRY)
             // extract to public doodad
             // this is also used in user-registration flow now
             SetAccessToken(GetJwt(user), context);
@@ -60,15 +61,36 @@ public class AuthService(
         return false;
     }
 
-    public void SetAccessToken(string token, HttpContext context)
+    public async Task LogOut(int userId, HttpContext context)
+    {
+        var user =
+            await _userRepository.GetById(userId)
+            ?? throw new KeyNotFoundException("User not found");
+
+        // To-Do (medium DRY)
+        SetAccessToken(GetJwt(user), context, true);
+        var refreshToken = await GetRefreshToken();
+        var expiresAt = DateTime.UtcNow.AddDays(-1);
+        UserUpdateDto userUpdateDto = new()
+        {
+            RefreshToken = refreshToken,
+            RefreshTokenExpiresAt = expiresAt,
+        };
+        await _userRepository.Update(user.Id, userUpdateDto);
+        SetRefreshToken(refreshToken, expiresAt, context);
+    }
+
+    public void SetAccessToken(string token, HttpContext context, bool expireToken = false)
     {
         context.Response.Cookies.Append(
             "accessToken",
             token,
             new CookieOptions
             {
-                Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtExpiry),
-                HttpOnly = false,
+                Expires = expireToken
+                    ? DateTimeOffset.UtcNow.AddDays(-1)
+                    : DateTimeOffset.UtcNow.AddMinutes(_jwtExpiry),
+                HttpOnly = true,
                 IsEssential = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,

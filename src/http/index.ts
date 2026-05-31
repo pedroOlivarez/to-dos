@@ -75,13 +75,13 @@ async function getWithResult<T>(route: string, params?: URLSearchParams): Promis
    }
 }
 
-async function post<Dto>(route: string, body: Dto): Promise<BaseResponse> {
+async function post<Dto = null>(route: string, body?: Dto): Promise<BaseResponse> {
    try {
       const response = await fetch(`${url}/${route}`, {
          method: 'post',
          headers,
          credentials,
-         body: JSON.stringify(body),
+         body: body ? JSON.stringify(body) : undefined,
       });
       return {
          statusCode: response.status,
@@ -89,7 +89,7 @@ async function post<Dto>(route: string, body: Dto): Promise<BaseResponse> {
       };
    } catch (err) {
       console.error(err);
-      throw new Error('Error creating entity', { cause: err });
+      throw new Error('Error making post request', { cause: err });
    }
 }
 
