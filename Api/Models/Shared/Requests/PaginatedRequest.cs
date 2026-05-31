@@ -17,7 +17,5 @@ public class PaginatedRequest
     public int OffSet => Page < 2 ? 0 : (Page - 1) * PageSize;
 
     public string? SanitizedQuery =>
-        !string.IsNullOrWhiteSpace(Query)
-            ? $"%{WebUtility.UrlDecode(Query).Replace("[", "[[]").Replace("%", "[%]").ToLower()}%"
-            : null;
+        !string.IsNullOrWhiteSpace(Query) ? $"%{WebUtility.UrlDecode(Query).ToLower()}%" : null;
 }

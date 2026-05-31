@@ -62,9 +62,9 @@ export function useAddToDoDialog({
 
       await onSubmit(data);
       setIsSubmitting(false);
+      reset();
     } catch {
-      // to-do (high): handle this
-      throw new Error("test");
+      setIsSubmitting(false);
     }
   };
 
