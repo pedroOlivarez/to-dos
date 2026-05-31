@@ -83,6 +83,7 @@ export function EditToDoDialog({
                   errors.title ? "Title field is required" : undefined
                 }
                 defaultValue={defaultValues.title}
+                maxLength={500}
               />
             </Field>
             <Field>
@@ -92,6 +93,7 @@ export function EditToDoDialog({
                 name="todo_body"
                 onBlur={validateBody}
                 defaultValue={defaultValues.body}
+                maxLength={1000}
               />
             </Field>
             <Field className="flex flex-row">

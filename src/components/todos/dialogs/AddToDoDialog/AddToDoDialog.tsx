@@ -61,11 +61,17 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
                 placeholder={
                   errors.title ? "Title field is required" : undefined
                 }
+                maxLength={500}
               />
             </Field>
             <Field>
               <Label htmlFor="body">Body</Label>
-              <Input id="body" name="todo_body" onBlur={validateBody} />
+              <Input
+                id="body"
+                name="todo_body"
+                onBlur={validateBody}
+                maxLength={1000}
+              />
             </Field>
           </FieldGroup>
           <DialogFooter>

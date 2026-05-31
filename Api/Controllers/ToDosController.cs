@@ -27,6 +27,8 @@ public class ToDosController(IToDoService toDoService) : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<PaginatedResponse<ToDoModel>> Get([FromQuery] PaginatedRequest request)
     {
         return await _toDoService.GetMany(request, GetUserId());
@@ -40,18 +42,29 @@ public class ToDosController(IToDoService toDoService) : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ToDoModel> Create(ToDoInsertDto toDoInsertDto)
     {
+        if (!toDoInsertDto.IsValid)
+        {
+            throw new ArgumentException("Could not create to-do. Data not properly structured");
+        }
         return await _toDoService.Create(toDoInsertDto, GetUserId());
     }
 
     [HttpPatch]
     [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ToDoModel> Update(int id, ToDoUpdateDto toDoUpdateDto)
     {
+        if (!toDoUpdateDto.IsValid)
+        {
+            throw new ArgumentException("Could not update to-do. Data not properly structured");
+        }
         return await _toDoService.Update(id, toDoUpdateDto, GetUserId());
     }
 

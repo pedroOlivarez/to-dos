@@ -87,10 +87,6 @@ public class UserRepository(IConfiguration configuration)
     {
         List<string> updatedValues = ["updated_at = @now"];
 
-        if (userUpdateDto.Password is not null)
-        {
-            updatedValues.Add("password = @password");
-        }
         if (userUpdateDto.RefreshToken is not null)
         {
             updatedValues.Add(
@@ -107,18 +103,11 @@ public class UserRepository(IConfiguration configuration)
             new
             {
                 id,
-                password = userUpdateDto.Password,
                 now = DateTime.UtcNow,
                 refreshToken = userUpdateDto.RefreshToken,
                 refreshTokenExpiresAt = userUpdateDto.RefreshTokenExpiresAt,
             }
         );
-    }
-
-    // not currently in use
-    public async Task Archive(int id)
-    {
-        await Archive(tableName, id);
     }
 
     public async Task<bool> RefreshTokenExists(string refreshToken)

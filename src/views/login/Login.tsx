@@ -59,6 +59,7 @@ export function Login(props: ComponentProps<"div">) {
               onBlur={validateEmail}
               className={errors.email ? "border border-red-400" : ""}
               placeholder="email"
+              maxLength={500}
             />
             {errors.email && <p>{errors.email}</p>}
           </Field>
@@ -71,6 +72,7 @@ export function Login(props: ComponentProps<"div">) {
               onBlur={validatePassword}
               className={errors.password ? "border border-red-400" : ""}
               placeholder="password"
+              maxLength={500}
             />
             {errors.password && <p>{errors.password}</p>}
           </Field>
