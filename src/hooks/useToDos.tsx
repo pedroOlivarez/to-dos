@@ -37,6 +37,7 @@ function useToDos({
     }),
     [page, searchTerm, lastUpdated, args, queryFn],
   );
+
   return useQuery(toDoQueryArgs);
 }
 

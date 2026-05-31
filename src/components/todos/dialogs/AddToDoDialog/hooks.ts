@@ -47,20 +47,25 @@ export function useAddToDoDialog({
   };
 
   const handleFormSubmit = async (formData: FormData) => {
-    setIsSubmitting(true);
-    const title = formData.get("todo_title")?.toString().trim();
-    const body = formData.get("todo_body")?.toString().trim();
-    if (!title) {
-      console.error("Attempted to submit without required fields");
-      return;
-    }
-    const data: InsertToDo = {
-      title,
-      body,
-    };
+    try {
+      setIsSubmitting(true);
+      const title = formData.get("todo_title")?.toString().trim();
+      const body = formData.get("todo_body")?.toString().trim();
+      if (!title) {
+        console.error("Attempted to submit without required fields");
+        return;
+      }
+      const data: InsertToDo = {
+        title,
+        body,
+      };
 
-    await onSubmit(data);
-    setIsSubmitting(false);
+      await onSubmit(data);
+      setIsSubmitting(false);
+    } catch {
+      // to-do (high): handle this
+      throw new Error("test");
+    }
   };
 
   const reset = () => {
