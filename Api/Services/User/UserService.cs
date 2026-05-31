@@ -46,6 +46,12 @@ public class UserService(
         return user.ToModel();
     }
 
+    public async Task<bool> CheckIfEmailInUse(string email)
+    {
+        var user = await _userRepository.GetByEmail(email);
+        return user != null;
+    }
+
     public Task<UserModel> GetById(int id)
     {
         throw new NotImplementedException();

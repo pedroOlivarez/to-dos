@@ -43,6 +43,19 @@ public class ExceptionMiddleware(RequestDelegate next)
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
+        catch (ArgumentException ex)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Title = "Request could not be completed due to request arguments",
+                Status = StatusCodes.Status400BadRequest,
+                Instance = context.Request.Path,
+                Detail = $"{ex.Message} traceId: {traceId}",
+            };
+
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);

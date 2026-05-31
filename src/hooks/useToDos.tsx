@@ -7,7 +7,7 @@ function useToDos({
    lastUpdated,
    searchTerm,
    page = '1',
-   pageSize = '2',
+   pageSize = '100',
 }: {
    lastUpdated: string;
    searchTerm?: string;

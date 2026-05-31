@@ -11,9 +11,7 @@ const route = 'users';
 
 const register = async (userRequest: UserInsertDto): Promise<Response<UserModel>> => {
    const response = await postWithResult<UserInsertDto, UserModel>(`${route}`, userRequest);
-   if (!response.success) {
-      throw new Error(response.error);
-   }
+
    return response;
 };
 

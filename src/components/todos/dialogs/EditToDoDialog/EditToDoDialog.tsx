@@ -3,7 +3,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Field, FieldGroup } from '../../../ui/Field';
 import { Input } from '../../../ui/Input';
 import { Label } from '../../../ui/Label';
-import { type ComponentProps } from 'react';
+import { type ComponentProps, type SubmitEvent } from 'react';
 import type { UpdateToDo, ToDo } from '../../../../actions/ToDo';
 import useEditToDoDialog from './hooks';
 
@@ -38,6 +38,14 @@ export function EditToDoDialog({ defaultValues, onSubmit, onArchive, ...rest }: 
       return null;
    }
 
+   // To-Do (medium): this can get moved to utils, we'll use this on all forms probably
+   const handleSubmit = (event?: SubmitEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+      const formData = new FormData(event?.target);
+
+      handleFormSubmit(formData);
+   };
+
    return (
       <Dialog
          onOpenChange={(newOpen, eventDetails) => {
@@ -47,7 +55,7 @@ export function EditToDoDialog({ defaultValues, onSubmit, onArchive, ...rest }: 
          {...rest}
       >
          <DialogContent className="sm:max-w-sm bg-black shadow-xl shadow-black">
-            <form action={handleFormSubmit} className="flex flex-col gap-6">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                <DialogHeader>
                   <DialogTitle>Update To-Do</DialogTitle>
                </DialogHeader>

@@ -3,7 +3,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Field, FieldGroup } from '../../../ui/Field';
 import { Input } from '../../../ui/Input';
 import { Label } from '../../../ui/Label';
-import { type ComponentProps } from 'react';
+import { type ComponentProps, type SubmitEvent } from 'react';
 import type { InsertToDo } from '../../../../actions/ToDo';
 import { useAddToDoDialog } from './hooks';
 
@@ -15,6 +15,14 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
    const { errors, formIsTouched, formIsValid, isSubmitting, validateTitle, validateBody, handleFormSubmit, reset } =
       useAddToDoDialog({ onSubmit });
 
+   // To-Do (medium): this can get moved to utils, we'll use this on all forms probably
+   const handleSubmit = (event?: SubmitEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+      const formData = new FormData(event?.target);
+
+      handleFormSubmit(formData);
+   };
+
    return (
       <Dialog
          onOpenChange={(newOpen, eventDetails) => {
@@ -24,7 +32,7 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
          {...rest}
       >
          <DialogContent className="sm:max-w-sm bg-black shadow-xl shadow-black">
-            <form action={handleFormSubmit} className="flex flex-col gap-6">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                <DialogHeader>
                   <DialogTitle>Create To-Do</DialogTitle>
                </DialogHeader>
