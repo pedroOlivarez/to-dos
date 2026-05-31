@@ -59,45 +59,50 @@ export default function useEditToDoDialog({
   };
 
   const handleFormSubmit = async (formData: FormData) => {
-    if (!defaultValues) {
-      console.error(
-        "Attempted to update a to-do without passing in initial values",
-      );
-      return;
-    }
-    setIsSubmitting(true);
-    const title = formData.get("todo_title")?.toString().trim();
-    const body = formData.get("todo_body")?.toString().trim();
-    const completed = Boolean(formData.get("todo_completed")?.toString());
-    if (!title) {
-      setErrors((prev) => ({
-        ...prev,
-        title: true,
-      }));
-      return;
-    }
-    let updated = false;
-    const data: UpdateToDo = {};
+    try {
+      if (!defaultValues) {
+        console.error(
+          "Attempted to update a to-do without passing in initial values",
+        );
+        return;
+      }
+      setIsSubmitting(true);
+      const title = formData.get("todo_title")?.toString().trim();
+      const body = formData.get("todo_body")?.toString().trim();
+      const completed = Boolean(formData.get("todo_completed")?.toString());
+      if (!title) {
+        setErrors((prev) => ({
+          ...prev,
+          title: true,
+        }));
+        return;
+      }
+      let updated = false;
+      const data: UpdateToDo = {};
 
-    if (title !== defaultValues.title) {
-      data.title = title;
-      updated = true;
-    }
-    if (body !== defaultValues.body) {
-      data.body = body;
-      updated = true;
-    }
-    if (completed !== defaultValues.completed) {
-      data.completed = completed;
-      updated = true;
-    }
-    if (!updated) {
+      if (title !== defaultValues.title) {
+        data.title = title;
+        updated = true;
+      }
+      if (body !== defaultValues.body) {
+        data.body = body;
+        updated = true;
+      }
+      if (completed !== defaultValues.completed) {
+        data.completed = completed;
+        updated = true;
+      }
+      if (!updated) {
+        setIsSubmitting(false);
+        return;
+      }
+
+      await onSubmit(defaultValues.id, data);
       setIsSubmitting(false);
-      return;
+      reset();
+    } catch {
+      setIsSubmitting(false);
     }
-
-    await onSubmit(defaultValues.id, data);
-    reset();
   };
 
   const reset = () => {
