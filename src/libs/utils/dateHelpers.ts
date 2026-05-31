@@ -1,9 +1,9 @@
 function adjustedDate(date: Date): Date {
-   const offSetMinutes = date.getTimezoneOffset();
+  const offSetMinutes = date.getTimezoneOffset();
 
-   date.setMinutes(date.getMinutes() - offSetMinutes);
+  date.setMinutes(date.getMinutes() - offSetMinutes);
 
-   return date;
+  return date;
 }
 
 export { adjustedDate };

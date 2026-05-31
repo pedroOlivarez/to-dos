@@ -73,7 +73,7 @@ public class AuthService(
         var expiresAt = DateTime.UtcNow.AddDays(-1);
         UserUpdateDto userUpdateDto = new()
         {
-            RefreshToken = refreshToken,
+            RefreshToken = "",
             RefreshTokenExpiresAt = expiresAt,
         };
         await _userRepository.Update(user.Id, userUpdateDto);

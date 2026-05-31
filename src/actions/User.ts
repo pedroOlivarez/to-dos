@@ -1,18 +1,23 @@
-import { postWithResult, type Response } from '../http';
+import { postWithResult, type Response } from "../http";
 
-import { type AuthenticationRequest as UserInsertDto } from './Authenticate';
+import { type AuthenticationRequest as UserInsertDto } from "./Authenticate";
 
 type UserModel = {
-   id: number;
-   email: string;
+  id: number;
+  email: string;
 };
 
-const route = 'users';
+const route = "users";
 
-const register = async (userRequest: UserInsertDto): Promise<Response<UserModel>> => {
-   const response = await postWithResult<UserInsertDto, UserModel>(`${route}`, userRequest);
+const register = async (
+  userRequest: UserInsertDto,
+): Promise<Response<UserModel>> => {
+  const response = await postWithResult<UserInsertDto, UserModel>(
+    `${route}`,
+    userRequest,
+  );
 
-   return response;
+  return response;
 };
 
 export { register, type UserInsertDto };
