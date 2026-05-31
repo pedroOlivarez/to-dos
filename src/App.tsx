@@ -18,6 +18,7 @@ function App() {
                   }
                />
                <Route path="/login" element={<Login />} />
+               <Route path="*" element={<div>NOT FOUND</div>} />
             </Routes>
          </Layout>
       </section>
