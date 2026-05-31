@@ -60,15 +60,14 @@ public class UserRepository(IConfiguration configuration)
             ?? throw new KeyNotFoundException($"User with id {id} not found");
     }
 
-    public async Task<User> GetByEmail(string email)
+    public async Task<User?> GetByEmail(string email)
     {
         var sql =
             @$"
                {baseQueryString}
                AND Email = @email
             ";
-        return await GetByParams<User>(sql, new { email })
-            ?? throw new KeyNotFoundException($"User with email {email} not found");
+        return await GetByParams<User>(sql, new { email });
     }
 
     public async Task<User> GetByRefreshToken(string refreshToken)

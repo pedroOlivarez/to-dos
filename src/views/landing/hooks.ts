@@ -1,9 +1,10 @@
 import { useMemo, useState, type FocusEvent } from 'react';
 import { authenticate, type AuthenticationRequest } from '../../actions/Authenticate';
+import { register } from '../../actions/User';
 import { containsNumber, isValidEmail } from '../../libs/utils/stringUtils';
 import { useNavigate } from 'react-router';
 
-export function useLogin() {
+export function useLogin(type: 'authenticate' | 'register') {
    const navigate = useNavigate();
    const [currentState, setCurrentState] = useState<AuthenticationRequest>({
       email: '',
@@ -83,21 +84,40 @@ export function useLogin() {
          resetFormState();
          return;
       }
+
       const data: AuthenticationRequest = {
          email,
          password,
       };
-
-      const response = await authenticate(data);
+      if (type === 'authenticate') {
+         await authenticateUser(data);
+      } else {
+         await registerUser(data);
+      }
 
       resetFormState();
+   };
+
+   const authenticateUser = async (data: AuthenticationRequest) => {
+      const response = await authenticate(data);
       if (response) {
          navigate('/');
       } else {
-         resetFormState();
          setErrors({
             email: 'Invalid email or password',
             password: 'Invalid email or password',
+         });
+      }
+   };
+
+   const registerUser = async (data: AuthenticationRequest) => {
+      const response = await register(data);
+      if (response.success) {
+         navigate('/');
+      } else if (response.statusCode === 400) {
+         setErrors({
+            email: 'Email is already in use',
+            password: '',
          });
       }
    };

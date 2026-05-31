@@ -1,4 +1,4 @@
-import { useEffect, type ComponentProps } from 'react';
+import { useEffect, useState, type ComponentProps, type SubmitEvent } from 'react';
 import { Field, FieldGroup } from '../../components/ui/Field';
 import { Label } from '../../components/ui/Label';
 import { Input } from '../../components/ui/Input';
@@ -9,9 +9,10 @@ import { useAuth } from '../../components/auth/hooks';
 import { useNavigate } from 'react-router';
 
 export function Login(props: ComponentProps<'div'>) {
+   const [type, setType] = useState<'authenticate' | 'register'>('authenticate');
    const navigate = useNavigate();
    const { errors, formIsTouched, formIsValid, isSubmitting, validateEmail, validatePassword, handleFormSubmit } =
-      useLogin();
+      useLogin(type);
 
    const { isAuthenticated } = useAuth();
 
@@ -21,9 +22,17 @@ export function Login(props: ComponentProps<'div'>) {
       }
    }, [isAuthenticated, navigate]);
 
+   // To-Do (medium): this can get moved to utils, we'll use this on all forms probably
+   const handleSubmit = (event?: SubmitEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+      const formData = new FormData(event?.target);
+
+      handleFormSubmit(formData);
+   };
+
    return (
       <div className={cn('flex flex-col h-full sm:w-1/5 w-3/4 justify-center items-center', props.className)}>
-         <form className="flex flex-col w-full gap-4" action={handleFormSubmit}>
+         <form className="flex flex-col w-full gap-4" onSubmit={handleSubmit}>
             <FieldGroup>
                <Field>
                   <Label htmlFor="email">Email</Label>
@@ -49,10 +58,22 @@ export function Login(props: ComponentProps<'div'>) {
                   {errors.password && <p>{errors.password}</p>}
                </Field>
             </FieldGroup>
-            <Button variant="default" type="submit" disabled={!formIsTouched || !formIsValid || isSubmitting}>
+            <Button
+               onClick={() => setType('authenticate')}
+               variant="default"
+               type="submit"
+               disabled={!formIsTouched || !formIsValid || isSubmitting}
+            >
                Log in
             </Button>
-            {/* Register workflow goes here */}
+            <Button
+               onClick={() => setType('register')}
+               type="submit"
+               disabled={!formIsTouched || !formIsValid || isSubmitting}
+               variant="ghost"
+            >
+               Create account
+            </Button>
          </form>
       </div>
    );
