@@ -1,41 +1,34 @@
-import {
-   Pagination as PaginationBase,
-   PaginationContent,
-   PaginationItem,
-   PaginationLink,
-   PaginationNext,
-   PaginationPrevious,
-} from './Pagination.Base';
+import { Button } from './Button/Button';
 import type { Meta } from '../../http';
+import type { ComponentProps } from 'react';
+import { cn } from '../../libs/utils/classNames';
 
-export function Pagination({
-   page,
-   totalPages,
-   hasNext,
-   hasPrevious,
-}: Pick<Meta, 'page' | 'totalPages' | 'hasNext' | 'hasPrevious'>) {
+type PaginationProps = Pick<Meta, 'page' | 'totalPages' | 'hasNext' | 'hasPrevious'> &
+   ComponentProps<'div'> & {
+      onPageSelect: (pageNumber: number) => void;
+   };
+
+export function Pagination({ page, totalPages, hasNext, hasPrevious, onPageSelect, ...rest }: PaginationProps) {
    const range = Array.from({ length: totalPages }, (_, i) => i + 1);
+   const handleClick = (pageNumber: number) => onPageSelect(pageNumber);
    return (
-      <PaginationBase>
-         <PaginationContent>
-            {hasPrevious ? (
-               <PaginationItem>
-                  <PaginationPrevious href={`?page=${page - 1}`} />
-               </PaginationItem>
-            ) : null}
-            {range.map(pageNumber => (
-               <PaginationItem>
-                  <PaginationLink href={`?page=${pageNumber}`} isActive={pageNumber === page}>
-                     {pageNumber}
-                  </PaginationLink>
-               </PaginationItem>
-            ))}
-            {hasNext ? (
-               <PaginationItem>
-                  <PaginationNext href={`?page=${page + 1}`} />
-               </PaginationItem>
-            ) : null}
-         </PaginationContent>
-      </PaginationBase>
+      <div className={cn('flex w-full justify-center gap-1')} {...rest}>
+         <Button variant="outline" onClick={() => handleClick(page - 1)} disabled={!hasPrevious}>
+            prev
+         </Button>
+         {range.map(pageNumber => (
+            <Button
+               variant="ghost"
+               key={`pagination-item-${pageNumber}`}
+               onClick={() => handleClick(pageNumber)}
+               disabled={pageNumber === page}
+            >
+               {pageNumber}
+            </Button>
+         ))}
+         <Button variant="outline" onClick={() => handleClick(page + 1)} disabled={!hasNext}>
+            next
+         </Button>
+      </div>
    );
 }

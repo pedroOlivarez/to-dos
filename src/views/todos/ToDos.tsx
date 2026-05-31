@@ -5,21 +5,13 @@ import { AddToDoButton } from '../../components/todos/AddToDoButton';
 import { ResultDisplay } from '../../components/todos/ResultDisplay';
 import { cn } from '../../libs/utils/classNames';
 import { useToDosView } from './hooks';
-import { useSearchParams } from 'react-router';
 import { Pagination } from '../../components/ui/Pagination';
 import { Search } from '../../components/ui/Search';
+import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 
 export function ToDos(props: ComponentProps<'div'>) {
-   const [searchParams, setSearchParams] = useSearchParams();
-
-   const page = useMemo(() => {
-      return searchParams.get('page') ?? '1';
-   }, [searchParams]);
-
-   const searchTerm = useMemo(() => {
-      return searchParams.get('q') ?? undefined;
-   }, [searchParams]);
-
+   const [searchTerm, setSearchTerm] = useQueryState('q', parseAsString);
+   const [page, setPage] = useQueryState('page', parseAsInteger);
    const {
       modal,
       selectedToDo,
@@ -33,17 +25,17 @@ export function ToDos(props: ComponentProps<'div'>) {
       handleUpdate,
       handleCreate,
       handleArchive,
-   } = useToDosView({ page, searchTerm });
-
+   } = useToDosView({ page: page?.toString() ?? undefined, searchTerm: searchTerm ?? undefined });
    const showPagination = useMemo(() => data && data.meta && data.meta.totalPages > data.data.length, [data]);
-
    const handleSearch = (term: string | null) => {
-      if (term) {
-         searchParams.set('q', term);
-      } else {
-         searchParams.delete('q');
-      }
-      setSearchParams(searchParams);
+      setSearchTerm(term, {
+         shallow: true,
+      });
+   };
+   const handlePageSelect = (page: number) => {
+      setPage(page, {
+         shallow: true,
+      });
    };
 
    return (
@@ -55,7 +47,7 @@ export function ToDos(props: ComponentProps<'div'>) {
             )}
          >
             <Search onInput={handleSearch} debounceDelay={500} className="bg-black/65" />
-            {showPagination ? <Pagination {...data!.meta} /> : null}
+            {showPagination ? <Pagination {...data!.meta} onPageSelect={handlePageSelect} /> : null}
 
             <ResultDisplay
                onSelectToDo={handleSelectToDo}
