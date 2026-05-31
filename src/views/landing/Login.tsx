@@ -10,7 +10,7 @@ import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button/Button";
 import { useLogin } from "./hooks";
 import { cn } from "../../libs/utils/classNames";
-import { useAuth } from "../../components/auth/hooks";
+import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 
 export function Login(props: ComponentProps<"div">) {

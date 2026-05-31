@@ -4,6 +4,7 @@ import { Login } from "./views/landing/Login";
 import { NotFound } from "./views/boundaries/NotFound";
 import { ErrorBoundary } from "./views/boundaries/ErrorBoundary";
 import App from "./App";
+import { authMiddleware } from "./middlewares/authMiddleware";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       {
         path: "to-dos",
         Component: ToDos,
+        middleware: [authMiddleware],
         ErrorBoundary,
       },
     ],
@@ -24,6 +26,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     Component: NotFound,
+    middleware: [authMiddleware],
   },
 ]);
 
