@@ -69,7 +69,7 @@ public class ToDoRepository(IConfiguration configuration)
                 AND (
                     LOWER(title) LIKE @query
                     OR LOWER(body) LIKE @query
-                ) 
+                )
             "
             : null;
         var paginatedSql =

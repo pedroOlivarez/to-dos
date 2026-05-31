@@ -30,7 +30,7 @@ export function ToDos(props: ComponentProps<"div">) {
     searchTerm: searchTerm ?? undefined,
   });
   const showPagination = useMemo(
-    () => data && data.meta && data.meta.totalPages > data.data.length,
+    () => data && data.meta && data.meta.totalPages > 1,
     [data],
   );
   const handleSearch = (term: string | null) => {

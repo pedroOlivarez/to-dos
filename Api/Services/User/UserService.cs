@@ -16,11 +16,6 @@ public class UserService(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IAuthService _authService = authService;
 
-    public Task Archive(int id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<UserModel> Create(UserInsertDto userInsertDto, HttpContext context)
     {
         // To-DO: (high) verification on email format
@@ -50,15 +45,5 @@ public class UserService(
     {
         var user = await _userRepository.GetByEmail(email);
         return user != null;
-    }
-
-    public Task<UserModel> GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserModel> Update(int id, UserUpdateDto userUpdateDto)
-    {
-        throw new NotImplementedException();
     }
 }

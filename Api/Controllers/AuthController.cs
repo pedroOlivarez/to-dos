@@ -24,6 +24,8 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     [HttpPost]
     [Route("authenticate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<bool> Authenticate(AuthenticationRequest authenticationRequest)
     {
         return await _authService.Authenticate(authenticationRequest, HttpContext);
@@ -31,6 +33,8 @@ public class AuthController(IAuthService authService) : ControllerBase
 
     [HttpPost]
     [Route("log-out")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [Authorize]
     public async Task<StatusCodeResult> LogOut()
     {
@@ -38,7 +42,6 @@ public class AuthController(IAuthService authService) : ControllerBase
         return NoContent();
     }
 
-    // Used to check if user is logged in or should be re-directed to login-page
     [HttpGet]
     [Route("check")]
     [ProducesResponseType(StatusCodes.Status200OK)]

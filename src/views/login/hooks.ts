@@ -7,6 +7,9 @@ import { register } from "../../actions/User";
 import { containsNumber, isValidEmail } from "../../libs/utils/stringUtils";
 import { useNavigate } from "react-router";
 
+// To-Do (high): not great ux in terms of when the button becomes triggerable again on
+// invalid credentials or password in use type of deal
+// gonna need some tricky logi
 export function useLogin(type: "authenticate" | "register") {
   const navigate = useNavigate();
   const [currentState, setCurrentState] = useState<AuthenticationRequest>({
@@ -69,40 +72,35 @@ export function useLogin(type: "authenticate" | "register") {
     }));
   };
 
-  const resetFormState = () => {
-    setIsSubmitting(false);
-    setCurrentState({
-      email: "",
-      password: "",
-    });
-  };
-
   const handleFormSubmit = async (formData: FormData): Promise<void> => {
-    setIsSubmitting(true);
-    const email = formData.get("user_email")?.toString().trim();
-    const password = formData.get("user_password")?.toString();
-    if (!email) {
-      console.error("Attempted to submit login form without email");
-      resetFormState();
-      return;
-    }
-    if (!password) {
-      console.error("Attempted to submit login form without password");
-      resetFormState();
-      return;
-    }
+    try {
+      setIsSubmitting(true);
+      const email = formData.get("user_email")?.toString().trim();
+      const password = formData.get("user_password")?.toString();
+      if (!email) {
+        console.error("Attempted to submit login form without email");
+        setIsSubmitting(false);
+        return;
+      }
+      if (!password) {
+        console.error("Attempted to submit login form without password");
+        setIsSubmitting(false);
+        return;
+      }
 
-    const data: AuthenticationRequest = {
-      email,
-      password,
-    };
-    if (type === "authenticate") {
-      await authenticateUser(data);
-    } else {
-      await registerUser(data);
+      const data: AuthenticationRequest = {
+        email,
+        password,
+      };
+      if (type === "authenticate") {
+        await authenticateUser(data);
+      } else {
+        await registerUser(data);
+      }
+      setIsSubmitting(false);
+    } catch {
+      setIsSubmitting(false);
     }
-
-    resetFormState();
   };
 
   const authenticateUser = async (data: AuthenticationRequest) => {

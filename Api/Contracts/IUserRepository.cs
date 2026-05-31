@@ -16,6 +16,4 @@ public interface IUserRepository
     public Task<User> Create(UserInsertDto userInsertDto);
 
     public Task Update(int id, UserUpdateDto userUpdateDto);
-
-    public Task Archive(int id);
 }
