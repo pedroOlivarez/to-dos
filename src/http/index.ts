@@ -174,7 +174,6 @@ async function del(route: string, id: number): Promise<BaseResponse> {
       credentials,
     });
 
-    console.log(response);
     return {
       statusCode: response.status,
       success: response.ok,

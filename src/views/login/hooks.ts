@@ -117,7 +117,6 @@ export function useLogin(type: "authenticate" | "register") {
 
   const registerUser = async (data: AuthenticationRequest) => {
     const response = await register(data);
-    console.log(response.success);
     if (response.success) {
       navigate("/to-dos");
     } else if (response.statusCode === 400) {
