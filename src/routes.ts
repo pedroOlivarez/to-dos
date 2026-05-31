@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import { ToDos } from "./views/todos/ToDos";
-import { Login } from "./views/landing/Login";
+import { Login } from "./views/login/Login";
 import { NotFound } from "./views/boundaries/NotFound";
 import { ErrorBoundary } from "./views/boundaries/ErrorBoundary";
 import App from "./App";

@@ -1,4 +1,4 @@
-import { post, get } from "../http";
+import { post, get, postWithResult } from "../http";
 
 type AuthenticationRequest = {
   email: string;
@@ -10,12 +10,14 @@ const route = "auth";
 const authenticate = async (
   authRequest: AuthenticationRequest,
 ): Promise<boolean> => {
-  const response = await post<AuthenticationRequest>(
+  const response = await postWithResult<AuthenticationRequest, boolean>(
     `${route}/authenticate`,
     authRequest,
   );
-
-  return response.success;
+  if (!response.success) {
+    throw new Error(response.error);
+  }
+  return response.data;
 };
 
 const logOut = async (): Promise<void> => {
