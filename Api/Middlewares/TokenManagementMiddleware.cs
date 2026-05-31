@@ -53,6 +53,8 @@ public class TokenManagementMiddleware(RequestDelegate next)
             return;
         }
 
+        // To-Do (high)
+        // this feels like the stuff that can be in that public doodad
         var newRefreshToken = await authService.GetRefreshToken();
         var expiresAt = DateTime.UtcNow.AddDays(1);
         UserUpdateDto userUpdateDto = new()

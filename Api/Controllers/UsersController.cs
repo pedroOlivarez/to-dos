@@ -15,9 +15,12 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpPost]
     public async Task<UserModel> Register(UserInsertDto userInsertDto)
     {
-        return await _userService.Create(userInsertDto);
+        var user = await _userService.Create(userInsertDto, HttpContext);
+
+        return user;
     }
 
+    // To-Do (medium): Delete this and code for this path
     [HttpPatch]
     [Route("{id}")]
     [Authorize]
@@ -29,6 +32,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return await _userService.Update(id, userUpdateDto);
     }
 
+    // To-Do (medium): Delete this and code for this path
     [HttpDelete]
     [Route("{id}")]
     [Authorize]

@@ -2,23 +2,28 @@ using Api.Authentication;
 using Api.Contracts;
 using Api.Dtos;
 using Api.Models.User;
+using Api.Services.Auth;
 
 namespace Api.Services.User;
 
-public class UserService(IPasswordHasher passwordHasher, IUserRepository userRepository)
-    : IUserService
+public class UserService(
+    IPasswordHasher passwordHasher,
+    IUserRepository userRepository,
+    IAuthService authService
+) : IUserService
 {
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IAuthService _authService = authService;
 
     public Task Archive(int id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<UserModel> Create(UserInsertDto userInsertDto)
+    public async Task<UserModel> Create(UserInsertDto userInsertDto, HttpContext context)
     {
-        // verification on email format
+        // To-DO: (high) verification on email format
         // verification on email uniqueness
         // verification on password length
         var hashedPassword = _passwordHasher.HashPassword(userInsertDto.Password);
@@ -26,6 +31,17 @@ public class UserService(IPasswordHasher passwordHasher, IUserRepository userRep
         userInsertDto.Password = hashedPassword;
 
         var user = await _userRepository.Create(userInsertDto);
+        var token = _authService.GetJwt(user);
+        _authService.SetAccessToken(token, context);
+        var refreshToken = await _authService.GetRefreshToken();
+        var expiresAt = DateTime.UtcNow.AddDays(1);
+        UserUpdateDto userUpdateDto = new()
+        {
+            RefreshToken = refreshToken,
+            RefreshTokenExpiresAt = expiresAt,
+        };
+        await _userRepository.Update(user.Id, userUpdateDto);
+        _authService.SetRefreshToken(refreshToken, expiresAt, context);
 
         return user.ToModel();
     }

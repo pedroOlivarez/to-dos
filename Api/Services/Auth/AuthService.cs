@@ -43,7 +43,8 @@ public class AuthService(
         );
         if (verificationResult == PasswordVerificationResult.Success)
         {
-            // extract to private doodad
+            // extract to public doodad
+            // this is also used in user-registration flow now
             SetAccessToken(GetJwt(user), context);
             var refreshToken = await GetRefreshToken();
             var expiresAt = DateTime.UtcNow.AddDays(1);
