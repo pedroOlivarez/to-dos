@@ -6,9 +6,9 @@
 
 - https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 
-2. In Api directory
+2. In `/Api` directory
 
-- create a copy of appsettings.json and name it appsettings.Development.json
+- create a copy of `appsettings.json` and name it `appsettings.Development.json`
 - request an invite to neon.tech workspace to get access to connectionstring and paste value under "Neon": {"ConnectionString"} OR create your own psql set-up with the following schemas and set up a local connection. The neon.tech route is quicker though.
 
 ```
@@ -43,7 +43,8 @@ CREATE UNIQUE INDEX "users_pkey" ON "users" ("id");
 CREATE UNIQUE INDEX "users_refresh_token_key" ON "users" ("refresh_token");
 ```
 
-- generate a super secret string to pop into the "Jwt" : { "Secret" } field as well. This is for local development so it doesn't need to be too super secret
+- generate a super secret string to pop into the "Jwt" : { "Secret" } field as well. This is for local development so it doesn't need to be too super secret, BUT it does need to be decently long otherwise you'll run into this error
+  `IDX10720: Unable to create KeyedHashAlgorithm for algorithm 'HS256', the key size must be greater than: '256' bits, key has '<NOT ENOUGH>' bits. (Parameter 'keyBytes')`
 
 3. Install latest version of Node
 
@@ -51,7 +52,7 @@ CREATE UNIQUE INDEX "users_refresh_token_key" ON "users" ("refresh_token");
 
 4. Install dependencies
 
-- In a terminal run `npm i`
+- From the root directory, open a terminal and run `npm i`
 
 ## API
 
