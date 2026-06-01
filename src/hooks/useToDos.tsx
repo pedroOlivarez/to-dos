@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from "react";
-import { getToDos, type PaginatedResponse } from "../actions/ToDo";
+import { getToDos, type ToDo } from "../actions/ToDo";
 import { useQuery } from "./useQuery";
 import { type UseQueryArgs } from "./useQueryArgs";
+import { type PaginatedResponse } from "../http";
 
 function useToDos({
   lastUpdated,
@@ -29,7 +30,7 @@ function useToDos({
     return getToDos(args);
   }, []);
 
-  const toDoQueryArgs: UseQueryArgs<PaginatedResponse> = useMemo(
+  const toDoQueryArgs: UseQueryArgs<PaginatedResponse<ToDo>> = useMemo(
     () => ({
       queryKey: `${page}-${searchTerm}-${lastUpdated}`,
       args,

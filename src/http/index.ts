@@ -20,6 +20,7 @@ type Meta = {
   hasNext: boolean;
   hasPrevious: boolean;
 };
+type PaginatedResponse<T> = { data: T[]; meta: Meta };
 
 type Response<T> =
   | (BaseResponse & {
@@ -193,4 +194,5 @@ export {
   patch,
   type Meta,
   type Response,
+  type PaginatedResponse,
 };

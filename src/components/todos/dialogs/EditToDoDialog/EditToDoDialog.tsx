@@ -46,7 +46,6 @@ export function EditToDoDialog({
     }
   };
 
-  // To-Do (medium): this can get moved to utils, we'll use this on all forms probably
   const handleSubmit = (event?: SubmitEvent<HTMLFormElement>) => {
     event?.preventDefault();
     const formData = new FormData(event?.target);

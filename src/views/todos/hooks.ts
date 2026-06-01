@@ -14,7 +14,7 @@ import {
   parseAsStringEnum,
   useQueryState,
 } from "nuqs";
-import { TODO_MODALS } from "../../libs/types.ts";
+import { TODO_MODALS } from "../../libs/types/index.ts";
 
 export function useToDosView() {
   const [searchTerm, setSearchTerm] = useQueryState("q", parseAsString);

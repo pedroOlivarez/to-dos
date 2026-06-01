@@ -7,7 +7,7 @@ import { useToDosView } from "./hooks";
 import { Pagination } from "../../components/ui/Pagination";
 import { Search } from "../../components/ui/Search";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import { TODO_MODALS } from "../../libs/types.ts";
+import { TODO_MODALS } from "../../libs/types/index.ts";
 
 export function ToDos(props: ComponentProps<"div">) {
   const [modal, setModal] = useQueryState(
@@ -61,7 +61,6 @@ export function ToDos(props: ComponentProps<"div">) {
         onOpenChange={handleAddToDoDialogOpenChange}
         onSubmit={handleCreate}
       />
-      {/* To-Do (medium) loading & error state here instead of not rendering at all */}
       {!!toDo && !toDoLoading && !toDoError ? (
         <EditToDoDialog
           open={modal === TODO_MODALS.EDIT}
