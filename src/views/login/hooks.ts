@@ -59,9 +59,7 @@ export function useLogin(type: "authenticate" | "register") {
   const handlePasswordBlur = (e: FocusEvent<HTMLInputElement, Element>) => {
     const password = e.currentTarget.value;
     validatePassword(password);
-    if (errors.email !== "Email is already in use") {
-      validateEmail(currentState.email);
-    }
+    validateEmail(currentState.email);
   };
 
   const validatePassword = (password: string) => {
