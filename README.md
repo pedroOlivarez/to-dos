@@ -55,13 +55,15 @@ CREATE UNIQUE INDEX "users_refresh_token_key" ON "users" ("refresh_token");
 
 ## API
 
-1. Open terminal
-2. Run: `npm run dev:api`
+1. From the root directory
+2. Open terminal
+3. Run: `npm run dev:api`
 
 ## Client
 
-1. Open another terminal
-2. Run: `npm run dev:ui`
+1. From the root directory
+2. Open terminal
+3. Run: `npm run dev:ui`
 
 ## Considerations / Regrets
 
@@ -71,5 +73,5 @@ CREATE UNIQUE INDEX "users_refresh_token_key" ON "users" ("refresh_token");
 4. Everything in `src/components/ui` is just copied over from shadCn save for the `Search` and `Pagination` components. I like this approach because it feels less cluttery than installing an entire UI library via npm for less than a dozen components. Also you get to tinker with the code on a more granular level and perhaps learn from it, so it's highly flexible stuff
    https://ui.shadcn.com/docs
 5. Why would anyone decide to implement authentication on their own? That is not a good or fun use of several days
-6. No AI was used in the creation of this humble and modest application. I do not pay for any AI subscriptions. I use it at work because it is a tool that helps me do my job. When I am coding for something other than my own financial well-being and survival, I am adamantly in opposition to the ideological project represented by the advancement of AI; and so I do not pay for any subscriptions to any such models. Imagine, if you will, a woodworker who assembles furniture on an assembly line doing some recreational-style woodworking off the clock. I imagine this person doing rugged woodworking with minimal machinery out in the rustic woods and the sun is shining and the animals are chirping and joining along in song. Me writing code is like that except indoors and connected to wifi and in a gaming chair facing a screen and my back hurts.
+6. No AI was used in the creation of this humble and modest application. I do not pay for any AI subscriptions. I use it at work because it is a tool that helps me do my job. When I am coding for something other than my own financial well-being and survival, I am adamantly in opposition to the ideological project represented by the advancement of AI; and so I do not pay for any subscriptions to any such models. Imagine, if you will, a woodworker who assembles furniture on an assembly line doing some recreational-style woodworking off the clock. I imagine this person doing rugged woodworking with minimal machinery out in the rustic woods and the sun is shining and the animals are chirping and joining along in song. Me writing code is like that, except indoors and connected to wifi and in a gaming chair facing a screen and my back hurts.
 7. pls be nice to me
