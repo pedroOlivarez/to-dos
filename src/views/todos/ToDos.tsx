@@ -1,54 +1,42 @@
-import { useMemo, type ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import { AddToDoDialog } from "../../components/todos/dialogs/AddToDoDialog/AddToDoDialog";
 import { EditToDoDialog } from "../../components/todos/dialogs/EditToDoDialog/EditToDoDialog";
-import { AddToDoButton } from "../../components/todos/AddToDoButton";
 import { ResultDisplay } from "../../components/todos/ResultDisplay";
 import { cn } from "../../libs/utils/classNames";
 import { useToDosView } from "./hooks";
 import { Pagination } from "../../components/ui/Pagination";
 import { Search } from "../../components/ui/Search";
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { parseAsStringEnum, useQueryState } from "nuqs";
+import { TODO_MODALS } from "../../libs/types.ts";
 
 export function ToDos(props: ComponentProps<"div">) {
-  const [searchTerm, setSearchTerm] = useQueryState("q", parseAsString);
-  const [page, setPage] = useQueryState("page", parseAsInteger);
+  const [modal, setModal] = useQueryState(
+    "modal",
+    parseAsStringEnum(Object.values(TODO_MODALS)),
+  );
   const {
-    modal,
-    selectedToDo,
-    data,
-    isLoading,
-    isError,
-    handleAddToDoButtonClick,
-    handleSelectToDo,
+    toDos,
+    toDosLoading,
+    toDosError,
+    toDo,
+    toDoLoading,
+    toDoError,
+    showPagination,
+    handleSearch,
+    handlePageSelect,
     handleAddToDoDialogOpenChange,
     handleEditToDoDialogOpenChange,
+    handleSelectToDo,
     handleUpdate,
     handleCreate,
     handleArchive,
-  } = useToDosView({
-    page: page?.toString() ?? undefined,
-    searchTerm: searchTerm ?? undefined,
-  });
-  const showPagination = useMemo(
-    () => data && data.meta && data.meta.totalPages > 1,
-    [data],
-  );
-  const handleSearch = (term: string | null) => {
-    setSearchTerm(term, {
-      shallow: true,
-    });
-  };
-  const handlePageSelect = (page: number) => {
-    setPage(page, {
-      shallow: true,
-    });
-  };
+  } = useToDosView();
 
   return (
     <>
       <div
         className={cn(
-          "flex flex-col min-h-full w-full p-2 pr-18 sm:items-start  items-center gap-2",
+          "flex flex-col min-h-full w-full p-2 sm:items-start  items-center gap-2",
           props.className,
         )}
       >
@@ -58,34 +46,31 @@ export function ToDos(props: ComponentProps<"div">) {
           className="bg-black/65"
         />
         {showPagination ? (
-          <Pagination {...data!.meta} onPageSelect={handlePageSelect} />
+          <Pagination {...toDos!.meta} onPageSelect={handlePageSelect} />
         ) : null}
-
         <ResultDisplay
           onSelectToDo={handleSelectToDo}
-          toDos={data?.data ?? null}
-          isLoading={isLoading}
-          isError={isError}
+          toDos={toDos?.data ?? null}
+          isLoading={toDosLoading}
+          isError={toDosError}
+          onAddToDoClick={() => setModal(TODO_MODALS.ADD)}
         />
       </div>
-      {/* this placement doesn't stick to bottom on mobile after scroll :anguish: */}
-      <AddToDoButton
-        onClick={handleAddToDoButtonClick}
-        // replace this with cool custom animation to help guide user on how to create a to-do on fresh register
-        className={!data?.data.length && !modal ? "animate-bounce" : undefined}
-      />
       <AddToDoDialog
-        open={modal === "ADD_TODO"}
+        open={modal === TODO_MODALS.ADD}
         onOpenChange={handleAddToDoDialogOpenChange}
         onSubmit={handleCreate}
       />
-      <EditToDoDialog
-        open={modal === "EDIT_TODO"}
-        onOpenChange={handleEditToDoDialogOpenChange}
-        defaultValues={selectedToDo}
-        onSubmit={handleUpdate}
-        onArchive={handleArchive}
-      />
+      {/* To-Do (medium) loading & error state here instead of not rendering at all */}
+      {!!toDo && !toDoLoading && !toDoError ? (
+        <EditToDoDialog
+          open={modal === TODO_MODALS.EDIT}
+          onOpenChange={handleEditToDoDialogOpenChange}
+          defaultValues={toDo}
+          onSubmit={handleUpdate}
+          onArchive={handleArchive}
+        />
+      ) : null}
     </>
   );
 }

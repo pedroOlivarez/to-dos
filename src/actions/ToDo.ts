@@ -32,7 +32,7 @@ const getToDos = async (
       params.append(key, args[key]);
     }
   }
-  const response = await getWithResult<ToDo>(route, params);
+  const response = await getWithResult<ToDo[]>(route, params);
   if (!response.success) {
     throw new Error(response.error);
   }
@@ -43,6 +43,14 @@ const getToDos = async (
     })),
     meta: response.meta!,
   };
+};
+
+const getToDo = async (id: number): Promise<ToDo> => {
+  const response = await getWithResult<ToDo>(`${route}/${id}`);
+  if (!response.success) {
+    throw new Error(response.error);
+  }
+  return response.data;
 };
 
 const createToDo = async (toDo: InsertToDo): Promise<ToDo> => {
@@ -77,6 +85,7 @@ const archiveToDo = async (id: number): Promise<void> => {
 export {
   archiveToDo,
   createToDo,
+  getToDo,
   getToDos,
   updateToDo,
   type InsertToDo,

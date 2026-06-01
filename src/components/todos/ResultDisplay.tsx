@@ -1,4 +1,5 @@
 import type { ToDo as ToDoType } from "../../actions/ToDo";
+import { AddToDoButton } from "./AddToDoButton.tsx";
 import { ToDo } from "./ToDo";
 
 export function ResultDisplay({
@@ -6,11 +7,13 @@ export function ResultDisplay({
   isLoading,
   isError,
   onSelectToDo,
+  onAddToDoClick,
 }: {
   toDos: ToDoType[] | null;
   isLoading: boolean;
   isError: boolean;
   onSelectToDo: (id: number) => void;
+  onAddToDoClick: () => void;
 }) {
   return isLoading ? (
     "Fetching to-dos..."
@@ -21,6 +24,10 @@ export function ResultDisplay({
       {toDos.map((td) => (
         <ToDo onClick={onSelectToDo} key={td.id} toDo={td} />
       ))}
+      <AddToDoButton
+        onClick={() => onAddToDoClick()}
+        className={!toDos.length ? "animate-bounce" : undefined}
+      />
     </div>
   ) : (
     <div>Nothing to show yet</div>

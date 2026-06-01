@@ -2,10 +2,8 @@ import { useRouteError, Link } from "react-router";
 import blueberry from "../../public/blueberry.svg";
 
 export function ErrorBoundary() {
-  console.log("In the error boundary");
   const error = useRouteError() as { message: string };
 
-  console.log({ error });
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
       <img

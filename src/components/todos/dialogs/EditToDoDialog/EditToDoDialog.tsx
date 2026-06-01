@@ -15,7 +15,7 @@ import type { UpdateToDo, ToDo } from "../../../../actions/ToDo";
 import useEditToDoDialog from "./hooks";
 
 interface EditToDoDialog extends ComponentProps<typeof Dialog> {
-  defaultValues: ToDo | null;
+  defaultValues: ToDo;
   onSubmit: (id: number, data: UpdateToDo) => Promise<void>;
   onArchive: (id: number) => void;
 }
@@ -45,10 +45,6 @@ export function EditToDoDialog({
       throw new Error("Attempted to archive a to-do without passing in an id");
     }
   };
-
-  if (!defaultValues) {
-    return null;
-  }
 
   // To-Do (medium): this can get moved to utils, we'll use this on all forms probably
   const handleSubmit = (event?: SubmitEvent<HTMLFormElement>) => {
