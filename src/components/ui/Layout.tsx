@@ -1,3 +1,5 @@
+// shad
+
 import type { ComponentProps } from "react";
 import { cn } from "../../libs/utils/classNames";
 import { useAuth } from "../../hooks/useAuth";
@@ -21,6 +23,7 @@ export function Layout(props: ComponentProps<"div">) {
             onClick={handleLogOut}
             variant="outline"
             className="absolute right-2"
+            data-testid="log-out-btn"
           >
             Log Out
           </Button>

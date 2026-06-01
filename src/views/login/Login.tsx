@@ -48,7 +48,11 @@ export function Login(props: ComponentProps<"div">) {
         props.className,
       )}
     >
-      <form className="flex flex-col w-full gap-4" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col w-full gap-4"
+        onSubmit={handleSubmit}
+        data-testid="login-form"
+      >
         <FieldGroup>
           <Field>
             <Label htmlFor="email">Email</Label>
@@ -59,6 +63,7 @@ export function Login(props: ComponentProps<"div">) {
               className={errors.email ? "border border-red-400" : ""}
               placeholder="email"
               maxLength={500}
+              data-testid="email-input"
             />
             {errors.email && <p>{errors.email}</p>}
           </Field>
@@ -72,6 +77,7 @@ export function Login(props: ComponentProps<"div">) {
               className={errors.password ? "border border-red-400" : ""}
               placeholder="password"
               maxLength={500}
+              data-testid="password-input"
             />
             {errors.password && <p>{errors.password}</p>}
           </Field>
@@ -81,6 +87,7 @@ export function Login(props: ComponentProps<"div">) {
           variant="default"
           type="submit"
           disabled={!formIsTouched || !formIsValid || isSubmitting}
+          data-testid="log-in-btn"
         >
           Log in
         </Button>
@@ -89,6 +96,7 @@ export function Login(props: ComponentProps<"div">) {
           type="submit"
           disabled={!formIsTouched || !formIsValid || isSubmitting}
           variant="ghost"
+          data-testid="register-btn"
         >
           Create account
         </Button>
