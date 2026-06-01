@@ -43,19 +43,7 @@ public class AuthService(
         );
         if (verificationResult == PasswordVerificationResult.Success)
         {
-            // To-Do (medium DRY)
-            // extract to public doodad
-            // this is also used in user-registration flow now
-            SetAccessToken(GetJwt(user), context);
-            var refreshToken = await GetRefreshToken();
-            var expiresAt = DateTime.UtcNow.AddDays(1);
-            UserUpdateDto userUpdateDto = new()
-            {
-                RefreshToken = refreshToken,
-                RefreshTokenExpiresAt = expiresAt,
-            };
-            await _userRepository.Update(user.Id, userUpdateDto);
-            SetRefreshToken(refreshToken, expiresAt, context);
+            await SetTokens(user, context);
             return true;
         }
         return false;
@@ -67,20 +55,24 @@ public class AuthService(
             await _userRepository.GetById(userId)
             ?? throw new KeyNotFoundException("User not found");
 
-        // To-Do (medium DRY)
-        SetAccessToken(GetJwt(user), context, true);
+        await SetTokens(user, context, true);
+    }
+
+    public async Task SetTokens(Entities.User user, HttpContext context, bool expireTokens = false)
+    {
+        SetAccessToken(GetJwt(user), context, expireTokens);
         var refreshToken = await GetRefreshToken();
-        var expiresAt = DateTime.UtcNow.AddDays(-1);
+        var expiresAt = DateTime.UtcNow.AddDays(expireTokens ? -1 : 1);
         UserUpdateDto userUpdateDto = new()
         {
-            RefreshToken = "",
-            RefreshTokenExpiresAt = expiresAt,
+            RefreshToken = expireTokens ? "" : refreshToken,
+            RefreshTokenExpiresAt = expireTokens ? null : expiresAt,
         };
         await _userRepository.Update(user.Id, userUpdateDto);
         SetRefreshToken(refreshToken, expiresAt, context);
     }
 
-    public void SetAccessToken(string token, HttpContext context, bool expireToken = false)
+    private void SetAccessToken(string token, HttpContext context, bool expireToken = false)
     {
         context.Response.Cookies.Append(
             "accessToken",
@@ -98,7 +90,7 @@ public class AuthService(
         );
     }
 
-    public void SetRefreshToken(string token, DateTime expires, HttpContext context)
+    private static void SetRefreshToken(string token, DateTime expires, HttpContext context)
     {
         context.Response.Cookies.Append(
             "refreshToken",
@@ -114,7 +106,7 @@ public class AuthService(
         );
     }
 
-    public string GetJwt(Entities.User user)
+    private string GetJwt(Entities.User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -138,7 +130,7 @@ public class AuthService(
         return handler.CreateToken(tokenDescriptor);
     }
 
-    public async Task<string> GetRefreshToken()
+    private async Task<string> GetRefreshToken()
     {
         var tokenExists = true;
         var randomNumber = new byte[32];

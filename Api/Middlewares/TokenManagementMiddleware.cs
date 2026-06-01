@@ -53,18 +53,7 @@ public class TokenManagementMiddleware(RequestDelegate next)
             return;
         }
 
-        // To-Do (high)
-        // this feels like the stuff that can be in that public doodad
-        var newRefreshToken = await authService.GetRefreshToken();
-        var expiresAt = DateTime.UtcNow.AddDays(1);
-        UserUpdateDto userUpdateDto = new()
-        {
-            RefreshToken = newRefreshToken,
-            RefreshTokenExpiresAt = expiresAt,
-        };
-        await userRepository.Update(user.Id, userUpdateDto);
-        authService.SetAccessToken(authService.GetJwt(user), context);
-        authService.SetRefreshToken(newRefreshToken, expiresAt, context);
+        await authService.SetTokens(user, context);
     }
 
     private static bool IsAccessTokenPresentAndValid(string? accessToken, HttpContext context)
