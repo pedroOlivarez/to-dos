@@ -51,7 +51,7 @@ async function get(route: string): Promise<BaseResponse> {
 async function getWithResult<T>(
   route: string,
   params?: URLSearchParams,
-): Promise<Response<T[]>> {
+): Promise<Response<T>> {
   try {
     const response = await fetch(
       `${url}/${route}${params ? `?${params}` : ""}`,
@@ -66,7 +66,7 @@ async function getWithResult<T>(
       return {
         statusCode: response.status,
         success: true,
-        data: responseBody.data as T[],
+        data: responseBody?.data ?? (responseBody as T),
         meta: responseBody.meta ? (responseBody.meta as Meta) : undefined,
       };
     }
