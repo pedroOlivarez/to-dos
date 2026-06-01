@@ -1,3 +1,5 @@
+// shad
+
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator";
 
 import { cn } from "../../libs/utils/classNames";
