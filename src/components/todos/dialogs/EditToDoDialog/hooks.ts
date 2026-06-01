@@ -1,4 +1,4 @@
-import { useMemo, useState, type FocusEvent } from "react";
+import { useMemo, useState, type InputEvent } from "react";
 import type { ToDo, UpdateToDo } from "../../../../actions/ToDo";
 
 export default function useEditToDoDialog({
@@ -31,7 +31,7 @@ export default function useEditToDoDialog({
     return true;
   }, [errors]);
 
-  const validateTitle = (e: FocusEvent<HTMLInputElement, Element>) => {
+  const validateTitle = (e: InputEvent<HTMLInputElement>) => {
     const title = e.currentTarget.value.trim();
     setCurrentState((prev) => ({
       ...prev,
@@ -43,7 +43,7 @@ export default function useEditToDoDialog({
     }));
   };
 
-  const validateBody = (e: FocusEvent<HTMLInputElement, Element>) => {
+  const validateBody = (e: InputEvent<HTMLInputElement>) => {
     const body = e.currentTarget.value.trim();
     setCurrentState((prev) => ({
       ...prev,

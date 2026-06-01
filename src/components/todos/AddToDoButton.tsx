@@ -13,6 +13,7 @@ export function AddToDoButton({
         className,
       )}
       {...rest}
+      data-testid="add-todo-btn"
     >
       <span>
         <PlusIcon size={32} />

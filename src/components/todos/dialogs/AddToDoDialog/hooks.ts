@@ -1,4 +1,4 @@
-import { useMemo, useState, type FocusEvent } from "react";
+import { useMemo, useState, type InputEvent } from "react";
 import type { InsertToDo } from "../../../../actions/ToDo";
 
 export function useAddToDoDialog({
@@ -26,7 +26,7 @@ export function useAddToDoDialog({
     return true;
   }, [errors]);
 
-  const validateTitle = (e: FocusEvent<HTMLInputElement, Element>) => {
+  const validateTitle = (e: InputEvent<HTMLInputElement>) => {
     const title = e.currentTarget.value.trim();
     setCurrentState((prev) => ({
       ...prev,
@@ -38,7 +38,7 @@ export function useAddToDoDialog({
     }));
   };
 
-  const validateBody = (e: FocusEvent<HTMLInputElement, Element>) => {
+  const validateBody = (e: InputEvent<HTMLInputElement>) => {
     const body = e.currentTarget.value.trim();
     setCurrentState((prev) => ({
       ...prev,

@@ -72,13 +72,14 @@ export function EditToDoDialog({
               <Input
                 id="title"
                 name="todo_title"
-                onBlur={validateTitle}
+                onInput={validateTitle}
                 className={errors.title ? "border border-red-400" : ""}
                 placeholder={
                   errors.title ? "Title field is required" : undefined
                 }
                 defaultValue={defaultValues.title}
                 maxLength={500}
+                data-testid="title-input"
               />
             </Field>
             <Field>
@@ -86,9 +87,10 @@ export function EditToDoDialog({
               <Input
                 id="body"
                 name="todo_body"
-                onBlur={validateBody}
+                onInput={validateBody}
                 defaultValue={defaultValues.body}
                 maxLength={1000}
+                data-testid="body-input"
               />
             </Field>
             <Field className="flex flex-row">
@@ -99,19 +101,25 @@ export function EditToDoDialog({
                 name="todo_completed"
                 onClick={validateCompleted}
                 defaultChecked={defaultValues.completed}
-                className="min-h-6 max-h-6 min-w-6 max-w-6 "
+                className="min-h-6 max-h-6 min-w-6 max-w-6"
+                data-testid="todo-checkbox"
               />
             </Field>
           </FieldGroup>
           <DialogFooter>
             <DialogClose render={<Button variant="outline">Cancel</Button>} />
-            <Button variant="destructive" onClick={handleArchive}>
+            <Button
+              variant="destructive"
+              onClick={handleArchive}
+              data-testid="archive-todo-btn"
+            >
               Archive
             </Button>
             <Button
               variant="default"
               type="submit"
               disabled={!formIsTouched || !formIsValid || isSubmitting}
+              data-testid="edit-todo-btn"
             >
               Save changes
             </Button>

@@ -55,12 +55,13 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
               <Input
                 id="title"
                 name="todo_title"
-                onBlur={validateTitle}
+                onInput={validateTitle}
                 className={errors.title ? "border border-red-400" : ""}
                 placeholder={
                   errors.title ? "Title field is required" : undefined
                 }
                 maxLength={500}
+                data-testid="title-input"
               />
             </Field>
             <Field>
@@ -68,8 +69,9 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
               <Input
                 id="body"
                 name="todo_body"
-                onBlur={validateBody}
+                onInput={validateBody}
                 maxLength={1000}
+                data-testid="body-input"
               />
             </Field>
           </FieldGroup>
@@ -79,6 +81,7 @@ export function AddToDoDialog({ onSubmit, ...rest }: AddToDoDialog) {
               variant="default"
               type="submit"
               disabled={!formIsTouched || !formIsValid || isSubmitting}
+              data-testid="create-todo-btn"
             >
               Save changes
             </Button>

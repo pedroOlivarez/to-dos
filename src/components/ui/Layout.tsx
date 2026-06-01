@@ -23,6 +23,7 @@ export function Layout(props: ComponentProps<"div">) {
             onClick={handleLogOut}
             variant="outline"
             className="absolute right-2"
+            data-testid="log-out-btn"
           >
             Log Out
           </Button>
