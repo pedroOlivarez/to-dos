@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:api": "dotnet watch --project ./Api/api.csproj",
+    "dev:api": "dotnet watch --project ./Api/Api.csproj",
     "dev:ui": " vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
