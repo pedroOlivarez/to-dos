@@ -53,20 +53,17 @@ CREATE UNIQUE INDEX "users_refresh_token_key" ON "users" ("refresh_token");
 4. Install dependencies
 
 - From the root directory, open a terminal and run `npm i`
+- Then run `dotnet restore`
 
 ## API
 
 1. From the root directory
-2. Open terminal
-3. Run: `dotnet restore`
-4. Run: `npm run dev:api`
+2. In a terminal, run: `npm run dev:api`
 
 ## Client
 
 1. From the root directory
-2. Open terminal
-3. Run `npm i`
-4. Then run: `npm run dev:ui`
+2. In a terminal, run: `npm run dev:ui`
 
 ## Considerations / Regrets
 
