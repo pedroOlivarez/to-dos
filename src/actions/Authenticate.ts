@@ -25,9 +25,13 @@ const logOut = async (): Promise<void> => {
 };
 
 const checkAuthentication = async (): Promise<boolean> => {
-  const response = await get(`${route}/check`);
+  try {
+    const response = await get(`${route}/check`);
 
-  return response.success;
+    return response.success;
+  } catch {
+    return false;
+  }
 };
 
 export {
