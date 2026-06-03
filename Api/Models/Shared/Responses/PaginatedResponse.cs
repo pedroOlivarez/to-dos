@@ -1,3 +1,5 @@
+using Api.Utils;
+
 namespace Api.Models.Shared.Responses;
 
 public class Meta
@@ -10,8 +12,7 @@ public class Meta
 
     public required int Total { get; set; }
 
-    // delete what gets unused here
-    public int TotalPages => (int)Math.Ceiling(Total / (decimal)PageSize);
+    public int TotalPages => PageHelper.GetTotalPages(Total, PageSize);
     public int OffSet => (Page - 1) * PageSize;
     public bool HasNext => Page < TotalPages;
     public bool HasPrevious => Page > 1;

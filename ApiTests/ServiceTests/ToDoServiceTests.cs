@@ -1,6 +1,7 @@
 using Api.Contracts;
 using Api.Dtos;
 using Api.Entities;
+using Api.Models.Shared.Requests;
 using Api.Services.ToDo;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -69,6 +70,42 @@ public class ToDoServiceTests
             );
 
         _toDoRepository
+            .GetMany(Arg.Any<PaginatedRequest>(), Arg.Is<int>(i => i == _user1Id))
+            .Returns(
+                Task.FromResult<(int, IEnumerable<ToDo>)>(
+                    (
+                        3,
+                        [
+                            new ToDo()
+                            {
+                                Id = 1,
+                                Title = "1",
+                                UserId = _user1Id,
+                                Completed = false,
+                                Archived = false,
+                            },
+                            new ToDo()
+                            {
+                                Id = 2,
+                                Title = "2",
+                                UserId = _user1Id,
+                                Completed = false,
+                                Archived = false,
+                            },
+                            new ToDo()
+                            {
+                                Id = 3,
+                                Title = "3",
+                                UserId = _user1Id,
+                                Completed = false,
+                                Archived = false,
+                            },
+                        ]
+                    )
+                )
+            );
+
+        _toDoRepository
             .Update(Arg.Any<int>(), Arg.Any<ToDoUpdateDto>())
             .Returns(Task.CompletedTask);
 
@@ -99,6 +136,16 @@ public class ToDoServiceTests
         var result = await _toDoService.GetById(_toDoBelongingToUser1Id, _user1Id);
 
         Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    public async Task GetToDos_With_BadArgs_ThrowsArgumentException()
+    {
+        var request = new PaginatedRequest { Page = 2, PageSize = 4 };
+
+        Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _toDoService.GetMany(request, _user1Id)
+        );
     }
 
     [Test]

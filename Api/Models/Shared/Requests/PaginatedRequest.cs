@@ -18,4 +18,6 @@ public class PaginatedRequest
 
     public string? SanitizedQuery =>
         !string.IsNullOrWhiteSpace(Query) ? $"%{WebUtility.UrlDecode(Query).ToLower()}%" : null;
+
+    public bool IsValid => Page >= 1 && PageSize >= 1;
 }
