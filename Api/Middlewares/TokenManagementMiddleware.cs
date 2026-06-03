@@ -44,9 +44,9 @@ public class TokenManagementMiddleware(RequestDelegate next)
 
         var user = await userRepository.GetByRefreshToken(refreshToken);
         if (
-            user is null
-            || user.RefreshToken is null
-            || user.RefreshTokenExpiresAt is null
+            user == null
+            || user.RefreshToken == null
+            || user.RefreshTokenExpiresAt == null
             || DateTime.UtcNow > user.RefreshTokenExpiresAt
         )
         {
