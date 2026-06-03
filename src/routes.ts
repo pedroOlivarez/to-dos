@@ -11,10 +11,12 @@ const router = createBrowserRouter([
     path: "/",
     Component: App,
     index: false,
+    ErrorBoundary,
     children: [
       {
         path: "login",
         index: true,
+        ErrorBoundary,
         Component: Login,
       },
       {
@@ -28,6 +30,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     Component: NotFound,
+    ErrorBoundary,
     middleware: [authMiddleware],
   },
 ]);
