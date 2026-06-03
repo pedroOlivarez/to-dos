@@ -32,6 +32,10 @@ public class ToDosController(IToDoService toDoService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<PaginatedResponse<ToDoModel>> Get([FromQuery] PaginatedRequest request)
     {
+        if (!request.IsValid)
+        {
+            throw new ArgumentException("Invalid request params");
+        }
         return await _toDoService.GetMany(request, GetUserId());
     }
 

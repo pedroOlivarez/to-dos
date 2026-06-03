@@ -3,6 +3,7 @@ using Api.Dtos;
 using Api.Models.Shared.Requests;
 using Api.Models.Shared.Responses;
 using Api.Models.ToDo;
+using Api.Utils;
 
 namespace Api.Services.ToDo;
 
@@ -25,6 +26,11 @@ public class ToDoService(IToDoRepository toDoRepository) : IToDoService
     public async Task<PaginatedResponse<ToDoModel>> GetMany(PaginatedRequest request, int userId)
     {
         var (total, data) = await _toDoRepository.GetMany(request, userId);
+        var maxPages = PageHelper.GetTotalPages(total, request.PageSize);
+        if (maxPages < request.Page)
+        {
+            throw new ArgumentException("Invalid request params");
+        }
         return new PaginatedResponse<ToDoModel>
         {
             Data = data.Select(d => d.ToModel()),
