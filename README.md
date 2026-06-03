@@ -58,18 +58,20 @@ CREATE UNIQUE INDEX "users_refresh_token_key" ON "users" ("refresh_token");
 
 1. From the root directory
 2. Open terminal
-3. Run: `npm run dev:api`
+3. Run: `dotnet restore`
+4. Run: `npm run dev:api`
 
 ## Client
 
 1. From the root directory
 2. Open terminal
-3. Run: `npm run dev:ui`
+3. Run `npm i`
+4. Then run: `npm run dev:ui`
 
 ## Considerations / Regrets
 
 1. I did not use Entity framework for some reason. I use EF every day at work and had nostalgic memories of using dapper because I like to "see my sql", OR SO I THOUGHT. I regret not using EF; though it abstracts the queries from you, this can be good because it reduces the need to re-write things and prevents against silly errors like misnamed columns. Alas it is too late for that now ¯\_(ツ)\_/¯
-2. I regret not using more third party libraries such as react-hook-form or using google auth. I do not know why I decided to implement auth from scratch. (there's no way to recover a user account if you forget your email because I did not set up an email client or anything of that nature which would probably be necessary for an MVP. If I could go back I would just figure out google auth integration and call it a day)
+2. I regret not using more third party libraries such as react-hook-form or using google auth. I do not know why I decided to implement auth from scratch. (there's no way to recover a user account if you forget your password because I did not set up an email client or anything of that nature which would probably be necessary for an MVP. If I could go back I would just figure out google auth integration and call it a day)
 3. The API structure could benefit from some projects instead of having everything live under API. Not ideal but at this point in the project it's small enough to not really make a difference
 4. Everything in `src/components/ui` is just copied over from shadCn save for the `Search` and `Pagination` components. I like this approach because it feels less cluttery than installing an entire UI library via npm for less than a dozen components. Also you get to tinker with the code on a more granular level and perhaps learn from it, so it's highly flexible stuff
    https://ui.shadcn.com/docs
