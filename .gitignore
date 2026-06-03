@@ -4,6 +4,8 @@
 Api/bin
 Api/obj
 Api/appsettings.Development.json
+ApiTests/bin
+ApiTests/obj
 
 node_modules
 .env.local
